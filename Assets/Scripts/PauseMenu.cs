@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Pause : MonoBehaviour {
 
@@ -7,7 +8,7 @@ public GameObject Container;
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             Container.SetActive(true); 
             Time.timeScale = 0;
@@ -15,8 +16,8 @@ public GameObject Container;
     }
 
     public void ResumeButton(){
-        Time.timeScale = 1;
         Container.SetActive(false);
+        Time.timeScale = 1;
     }
 
     public void OptionsButton(){
@@ -24,6 +25,7 @@ public GameObject Container;
     }
 
     public void MainMenuButton(){
+        //when main menu has been developed.....
         
     }
 }
