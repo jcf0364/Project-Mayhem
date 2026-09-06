@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 189635278}
   - component: {fileID: 189635280}
   - component: {fileID: 189635279}
+  - component: {fileID: 189635281}
   m_Layer: 5
   m_Name: Healthbar_P1
   m_TagString: Untagged
@@ -196,6 +197,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189635277}
   m_CullTransparentMesh: 1
+--- !u!114 &189635281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189635277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74162624d23164760b0171e5e69f71ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
+  playerHealth: {fileID: 696962514}
+  fillImage: {fileID: 798487241}
+  chipImage: {fileID: 905024871}
+  fillLerpSpeed: 24.9
+  chipDelay: 0.45
+  chipDrainSpeed: 0.6
 --- !u!1 &240776550
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,6 +819,7 @@ GameObject:
   - component: {fileID: 563577754}
   - component: {fileID: 563577756}
   - component: {fileID: 563577755}
+  - component: {fileID: 563577757}
   m_Layer: 5
   m_Name: Healthbar_P2
   m_TagString: Untagged
@@ -866,6 +886,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563577753}
   m_CullTransparentMesh: 1
+--- !u!114 &563577757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563577753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74162624d23164760b0171e5e69f71ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
+  playerHealth: {fileID: 1434338134}
+  fillImage: {fileID: 351454182}
+  chipImage: {fileID: 1711741271}
+  fillLerpSpeed: 25
+  chipDelay: 0.45
+  chipDrainSpeed: 0.6
 --- !u!1 &610286624
 GameObject:
   m_ObjectHideFlags: 0
