@@ -20,7 +20,7 @@ public class PlayerHealth : MonoBehaviour
     public bool IsDead => currentHealth <= 0;
     public bool IsInvulnerable => Time.time < invulnerableUntil;
 
-    public void Awake()
+    private void Awake()
     {
         currentHealth = maxHealth;
     }
@@ -33,7 +33,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (amount <- 0) return;
+        if (amount <= 0) return;
         if (IsDead) return;
         if (IsInvulnerable) return;
 
@@ -43,6 +43,22 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (currentHealth == 0) Die();
+    }
+
+    public void Heal(int amount)
+    {
+        if (amount <= 0) return;
+        if (IsDead) return;
+
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
+        invulnerableUntil = 0f;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     private void Die()
