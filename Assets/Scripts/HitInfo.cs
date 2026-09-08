@@ -6,8 +6,10 @@ public struct HitInfo
     public GameObject Source;
     public Vector2 SourcePosition;
     public Vector2 ContactPoint;
+    public float KnockbackForce;
+    public float HitstunDuration;
 
-    public HitInfo(int damage, GameObject source, Vector2 contactPoint)
+    public HitInfo(int damage, GameObject source, Vector2 contactPoint, float knockbackForce = 0f, float hitstunDuration = 0f)
     {
         Damage = damage;
         Source = source;
@@ -15,5 +17,7 @@ public struct HitInfo
             ? (Vector2)source.transform.position
             : Vector2.zero;
         ContactPoint = contactPoint;
+        KnockbackForce = knockbackForce;
+        HitstunDuration = hitstunDuration;
     }
 }

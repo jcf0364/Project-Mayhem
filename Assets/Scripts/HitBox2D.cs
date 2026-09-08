@@ -7,6 +7,8 @@ public class HitBox2D : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private int damage = 15;
     [SerializeField] private GameObject owner;
+    [SerializeField] private float knockback = 8f;
+    [SerializeField] private float hitstun = 0.25f;
 
     [Header("Behaviour")]
     [SerializeField] private bool startDisabled = true;
@@ -54,7 +56,7 @@ public class HitBox2D : MonoBehaviour
         if (singleHitPerActivation && !alreadyHit.Add(hurtbox)) return;
         
         Vector2 contact = other.ClosestPoint(transform.position);
-        hurtbox.ReceiveHit(new HitInfo(damage, owner, contact));
+        hurtbox.ReceiveHit(new HitInfo(damage, owner, contact, knockback, hitstun));
     }
 
     private void OnDrawGizmos()
