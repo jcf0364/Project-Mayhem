@@ -18,6 +18,12 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private GameObject winScreen;
     [SerializeField] private TMP_Text winnerText;
 
+    [Header("Stats")]
+    [SerializeField] private MatchStats stats;
+    [SerializeField] private TMP_Text statsTextP1;
+    [SerializeField] private TMP_Text statsTextP2;
+      [SerializeField] private TMP_Text matchTimeText;
+
     private int livesP1;
     private int livesP2;
     private bool matchOver;
@@ -55,6 +61,8 @@ public class MatchManager : MonoBehaviour
         livesP1 = livesPerPlayer;
         livesP2 = livesPerPlayer;
 
+        if (stats != null) stats.ResetStats();
+
         if (winScreen != null) winScreen.SetActive(false);
 
         UpdateLivesDisplay();
@@ -73,6 +81,9 @@ public class MatchManager : MonoBehaviour
         else              livesP2--;
 
         UpdateLivesDisplay();
+
+        if (stats != null)
+            stats.RecordRoundWin(loserId == 1 ? 2 : 1);
 
         SetAllControlEnabled(false);
 
@@ -141,15 +152,44 @@ public class MatchManager : MonoBehaviour
     private IEnumerator EndMatchRoutine(int winnerId)
     {
         matchOver = true;
+        if (stats != null) stats.StopTimer();
 
         yield return new WaitForSeconds(roundResetDelay);
 
         if (winnerText != null)
             winnerText.text = $"PLAYER {winnerId} WINS";
+        
+        ShowStats();
 
         if (winScreen != null)
             winScreen.SetActive(true);
     }
+
+    private void ShowStats()
+    {
+        if (stats == null) return;
+
+        if (statsTextP1 != null)
+            statsTextP1.text =
+                "<b>PLAYER 1</b>\n" +
+                $"Rounds won: {stats.RoundsWonP1}\n" +
+                $"Lives left: {Mathf.Max(livesP1, 0)}\n" +
+                $"Damage dealt: {stats.DamageDealtP1}\n" +
+                $"Hits landed: {stats.HitsLandedP1}";
+
+        if (statsTextP2 != null)
+            statsTextP2.text =
+                "<b>PLAYER 2</b>\n" +
+                $"Rounds won: {stats.RoundsWonP2}\n" +
+                $"Lives left: {Mathf.Max(livesP2, 0)}\n" +
+                $"Damage dealt: {stats.DamageDealtP2}\n" +
+                $"Hits landed: {stats.HitsLandedP2}";
+
+        if (matchTimeText != null)
+            matchTimeText.text = $"Match time: {stats.FormatDuration()}";
+    }
+
+    
 
     // --- Button handler ---
 
