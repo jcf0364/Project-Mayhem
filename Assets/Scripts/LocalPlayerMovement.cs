@@ -21,6 +21,9 @@ public class LocalPlayerMovement : MonoBehaviour
     private float facingDirection = 1f;
     public float FacingDirection => facingDirection;
 
+    private bool inputEnabled = true;
+    public void SetInputEnabled(bool enabled) => inputEnabled = enabled;
+
     // Screen boundaries
     private Vector2 screenBounds;
     private float playerHalfWidth;
@@ -47,11 +50,23 @@ public class LocalPlayerMovement : MonoBehaviour
     void Update()
     {
         HandleMovement();
+    }
+
+    void LateUpdate()
+    {
+        var knockback = GetComponent<KnockbackReceiver>();
+        if (knockback != null && knockback.InHitstun) return;
+
         KeepPlayerInBounds();
     }
 
     void HandleMovement()
     {
+        if (!inputEnabled)
+        {
+            return;
+        }
+
         float move = 0f;
 
         if (Keyboard.current[leftKey].isPressed)
@@ -79,6 +94,13 @@ public class LocalPlayerMovement : MonoBehaviour
             );
 
             isGrounded = false;
+        }
+
+        if (Mathf.Abs(move) > 0.01f)
+        {
+            Vector3 s = transform.localScale;
+            s.x = Mathf.Abs(s.x) * facingDirection;
+            transform.localScale = s;
         }
     }
 
