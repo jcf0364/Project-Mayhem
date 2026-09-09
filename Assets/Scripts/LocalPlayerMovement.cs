@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
 
 public class LocalPlayerMovement : MonoBehaviour
 {
@@ -12,17 +11,6 @@ public class LocalPlayerMovement : MonoBehaviour
     public Key leftKey;
     public Key rightKey;
     public Key jumpKey;
-    public Key attackKey;
-
-    // Combat
-    public float attackRange = 1f;
-    public float baseKnockback = 5f;
-    public float knockbackUpForce = 3f;
-    public float damagePercent = 0f;
-    public float damagePerHit = 10f;
-
-    // UI
-    public TMP_Text damageText;
 
     // Components
     private Rigidbody2D rb;
@@ -31,6 +19,7 @@ public class LocalPlayerMovement : MonoBehaviour
     // Movement state
     private bool isGrounded;
     private float facingDirection = 1f;
+    public float FacingDirection => facingDirection;
 
     // Screen boundaries
     private Vector2 screenBounds;
@@ -53,14 +42,11 @@ public class LocalPlayerMovement : MonoBehaviour
             playerHalfWidth = spriteRenderer.bounds.extents.x;
             playerHalfHeight = spriteRenderer.bounds.extents.y;
         }
-
-        UpdateDamageText();
     }
 
     void Update()
     {
         HandleMovement();
-        HandleAttack();
         KeepPlayerInBounds();
     }
 
@@ -96,62 +82,6 @@ public class LocalPlayerMovement : MonoBehaviour
         }
     }
 
-    void HandleAttack()
-    {
-        if (Keyboard.current[attackKey].wasPressedThisFrame)
-        {
-            Attack();
-        }
-    }
-
-    void Attack()
-    {
-        Vector2 attackPosition =
-            (Vector2)transform.position +
-            new Vector2(facingDirection, 0f);
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(
-            attackPosition,
-            attackRange
-        );
-
-        foreach (Collider2D hit in hits)
-        {
-            if (hit.gameObject != gameObject &&
-                hit.CompareTag("Player"))
-            {
-                LocalPlayerMovement otherPlayer =
-                    hit.GetComponent<LocalPlayerMovement>();
-
-                Rigidbody2D otherRb =
-                    hit.GetComponent<Rigidbody2D>();
-
-                if (otherPlayer != null && otherRb != null)
-                {
-                    otherPlayer.damagePercent += damagePerHit;
-                    otherPlayer.UpdateDamageText();
-
-                    float knockback =
-                        baseKnockback +
-                        (otherPlayer.damagePercent * 0.05f);
-
-                    Vector2 knockbackDirection =
-                        new Vector2(
-                            facingDirection,
-                            1f
-                        ).normalized;
-
-                    otherRb.AddForce(
-                        new Vector2(
-                            knockbackDirection.x * knockback,
-                            knockbackDirection.y * knockbackUpForce
-                        ),
-                        ForceMode2D.Impulse
-                    );
-                }
-            }
-        }
-    }
 
     void KeepPlayerInBounds()
     {
@@ -179,18 +109,6 @@ public class LocalPlayerMovement : MonoBehaviour
         }
     }
 
-    void UpdateDamageText()
-    {
-        if (damageText != null)
-        {
-            string playerLabel =
-                gameObject.name == "Player1" ? "P1" : "P2";
-
-            damageText.text =
-                playerLabel + ": " + damagePercent + "%";
-        }
-    }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -213,14 +131,5 @@ public class LocalPlayerMovement : MonoBehaviour
         {
             isGrounded = false;
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireSphere(
-            (Vector2)transform.position +
-            new Vector2(facingDirection, 0f),
-            attackRange
-        );
     }
 }
