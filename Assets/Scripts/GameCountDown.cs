@@ -12,7 +12,7 @@ public class GameCountDown : MonoBehaviour
  
     void Start()
     {
-        players.AddRange(FindObjectsByType<LocalPlayerMovement>(FindObjectsSortMode.None));
+        players.AddRange(FindObjectsByType<LocalPlayerMovement>());
         StartCoroutine(StartCountdownRoutine());
     }
  
