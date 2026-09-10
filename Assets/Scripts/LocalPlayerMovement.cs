@@ -21,12 +21,20 @@ public class LocalPlayerMovement : MonoBehaviour
     public float damagePercent = 0f;
     public float damagePerHit = 10f;
 
+    // Sound effects
+    public AudioClip jumpSound;
+    public AudioClip landingSound;
+    public AudioClip attackSound;
+    public AudioClip hitSound;
+    public AudioClip specialMoveSound;
+
     // UI
     public TMP_Text damageText;
 
     // Components
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
 
     // Movement state
     private bool isGrounded;
@@ -41,13 +49,12 @@ public class LocalPlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
 
-        // Get the screen size in world coordinates
         screenBounds = Camera.main.ScreenToWorldPoint(
             new Vector2(Screen.width, Screen.height)
         );
 
-        // Get half the size of the player sprite
         if (spriteRenderer != null)
         {
             playerHalfWidth = spriteRenderer.bounds.extents.x;
@@ -85,12 +92,18 @@ public class LocalPlayerMovement : MonoBehaviour
             rb.linearVelocity.y
         );
 
+        // Jump
         if (Keyboard.current[jumpKey].wasPressedThisFrame && isGrounded)
         {
             rb.linearVelocity = new Vector2(
                 rb.linearVelocity.x,
                 jumpForce
             );
+
+            if (jumpSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
 
             isGrounded = false;
         }
@@ -106,6 +119,12 @@ public class LocalPlayerMovement : MonoBehaviour
 
     void Attack()
     {
+        // Whoosh sound when attack button is pressed
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
+
         Vector2 attackPosition =
             (Vector2)transform.position +
             new Vector2(facingDirection, 0f);
@@ -128,6 +147,12 @@ public class LocalPlayerMovement : MonoBehaviour
 
                 if (otherPlayer != null && otherRb != null)
                 {
+                    // Quieter hit sound only when attack connects
+                    if (hitSound != null && audioSource != null)
+                    {
+                        audioSource.PlayOneShot(hitSound, 0.4f);
+                    }
+
                     otherPlayer.damagePercent += damagePerHit;
                     otherPlayer.UpdateDamageText();
 
@@ -150,6 +175,15 @@ public class LocalPlayerMovement : MonoBehaviour
                     );
                 }
             }
+        }
+    }
+
+    // Ready for when special moves are implemented
+    public void PlaySpecialMoveSound()
+    {
+        if (specialMoveSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(specialMoveSound);
         }
     }
 
@@ -195,6 +229,14 @@ public class LocalPlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
+            // Play landing sound only when arriving on the ground
+            if (!isGrounded &&
+                landingSound != null &&
+                audioSource != null)
+            {
+                audioSource.PlayOneShot(landingSound, 0.5f);
+            }
+
             isGrounded = true;
         }
     }
