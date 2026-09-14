@@ -22,7 +22,11 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private MatchStats stats;
     [SerializeField] private TMP_Text statsTextP1;
     [SerializeField] private TMP_Text statsTextP2;
-      [SerializeField] private TMP_Text matchTimeText;
+    [SerializeField] private TMP_Text matchTimeText;
+   
+   
+    [Header("Round Flow")]
+    [SerializeField] private RoundCountdown roundCountdown;
 
     private int livesP1;
     private int livesP2;
@@ -66,7 +70,20 @@ public class MatchManager : MonoBehaviour
         if (winScreen != null) winScreen.SetActive(false);
 
         UpdateLivesDisplay();
-        ResetRoundState();
+    }
+
+    private void ResetRoundState()
+    {
+        player1.transform.position = startPosP1;
+        player2.transform.position = startPosP2;
+
+        ZeroVelocity(player1.gameObject);
+        ZeroVelocity(player2.gameObject);
+
+        player1.ResetHealth();
+        player2.ResetHealth();
+
+        SetAllControlEnabled(true);
     }
 
     private void HandleP1Died() => HandleDeath(1);
@@ -101,22 +118,20 @@ public class MatchManager : MonoBehaviour
     private IEnumerator ResetRoundRoutine()
     {
         yield return new WaitForSeconds(roundResetDelay);
-        ResetRoundState();
-    }
 
-    private void ResetRoundState()
-    {
         player1.transform.position = startPosP1;
         player2.transform.position = startPosP2;
 
         ZeroVelocity(player1.gameObject);
         ZeroVelocity(player2.gameObject);
 
-        // Health bars follow automatically via OnHealthChanged.
         player1.ResetHealth();
         player2.ResetHealth();
 
-        SetAllControlEnabled(true);
+        if (roundCountdown != null)
+            yield return roundCountdown.RunCountdown();
+        else
+            SetAllControlEnabled(true);
     }
 
     private void ZeroVelocity(GameObject fighter)

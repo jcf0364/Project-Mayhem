@@ -4,11 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class HitBox2D : MonoBehaviour
 {
-    [Header("Damage")]
+    [Header("Damage (set at runtime by PlayerAttack)")]
     [SerializeField] private int damage = 15;
-    [SerializeField] private GameObject owner;
     [SerializeField] private float knockback = 8f;
     [SerializeField] private float hitstun = 0.25f;
+    [SerializeField] private GameObject owner;
 
     [Header("Behaviour")]
     [SerializeField] private bool startDisabled = true;
@@ -74,5 +74,19 @@ public class HitBox2D : MonoBehaviour
             Gizmos.DrawCube(box.offset, box.size);
         else if (col is CircleCollider2D circle)
             Gizmos.DrawSphere(circle.offset, circle.radius);
+    }
+
+    /// Called by PlayerAttack before Activate() to apply the attack's values.
+    public void Configure(AttackData attack)
+    {
+        damage = attack.damage;
+        knockback = attack.knockback;
+        hitstun = attack.hitstun;
+
+        if (col is BoxCollider2D box)
+        {
+            box.size = attack.hitboxSize;
+            box.offset = attack.hitboxOffset;
+        }
     }
 }
