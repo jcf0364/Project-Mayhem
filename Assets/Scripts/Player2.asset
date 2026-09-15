@@ -46,7 +46,7 @@ MonoBehaviour:
   specialAttack:
     attackName: Charge
     damage: 22
-    knockback: 20
+    knockback: 10
     hitstun: 0.5
     windupTime: 0.15
     activeTime: 0.25
