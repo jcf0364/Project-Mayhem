@@ -9,6 +9,8 @@ public class PlayerHealth : MonoBehaviour
     [Header ("Damage Response")]
     [SerializeField] private float invulnerabilityDuration = 0.5f;
 
+    [SerializeField] private CharacterData character;
+
     private int currentHealth;
     private float invulnerableUntil;
 
@@ -22,6 +24,12 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
+
+        if (character != null)
+        {
+            maxHealth = character.maxHealth;
+            invulnerabilityDuration = character.invulnerabilityDuration;
+        }
         currentHealth = maxHealth;
 
         // Listen for hits from the combat system.

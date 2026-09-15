@@ -29,10 +29,21 @@ public class LocalPlayerMovement : MonoBehaviour
     private float playerHalfWidth;
     private float playerHalfHeight;
 
+    [Header("Character")]
+    [SerializeField] private CharacterData character;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (character != null)
+        {
+            speed = character.moveSpeed;
+            jumpForce = character.jumpForce;
+            rb.gravityScale = character.gravityScale;
+        }
 
         // Get the screen size in world coordinates
         screenBounds = Camera.main.ScreenToWorldPoint(

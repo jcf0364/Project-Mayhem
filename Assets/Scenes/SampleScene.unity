@@ -246,9 +246,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitBox2D
   damage: 15
-  owner: {fileID: 0}
   knockback: 8
   hitstun: 0.25
+  owner: {fileID: 0}
   startDisabled: 1
   singleHitPerActivation: 1
   gizmoColor: {r: 1, g: 0.2, b: 0.2, a: 0.35}
@@ -344,9 +344,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitBox2D
   damage: 15
-  owner: {fileID: 0}
   knockback: 8
   hitstun: 0.25
+  owner: {fileID: 0}
   startDisabled: 1
   singleHitPerActivation: 1
   gizmoColor: {r: 1, g: 0.2, b: 0.2, a: 0.35}
@@ -2264,6 +2264,7 @@ GameObject:
   - component: {fileID: 696962516}
   - component: {fileID: 696962515}
   - component: {fileID: 696962517}
+  - component: {fileID: 696962518}
   m_Layer: 6
   m_Name: Player1
   m_TagString: Player
@@ -2438,6 +2439,7 @@ MonoBehaviour:
   leftKey: 15
   rightKey: 18
   jumpKey: 37
+  character: {fileID: 11400000, guid: 4106ebf5d004a4b14b7d4dab86425e35, type: 2}
 --- !u!114 &696962515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2453,6 +2455,7 @@ MonoBehaviour:
   knockbackMultiplier: 1.4
   knockbackLift: 0.3
   applyHitstun: 1
+  character: {fileID: 11400000, guid: 4106ebf5d004a4b14b7d4dab86425e35, type: 2}
 --- !u!114 &696962516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2465,12 +2468,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98267fd35fa634078b14d8761881c324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  character: {fileID: 11400000, guid: 4106ebf5d004a4b14b7d4dab86425e35, type: 2}
   hitbox: {fileID: 120613963}
-  attackKey: 20
-  windupTime: 0.08
-  activeTime: 0.12
-  recoveryTime: 0.2
-  cooldown: 0.35
+  lightKey: 20
+  heavyKey: 19
+  specialKey: 32
   inputEnabled: 1
 --- !u!114 &696962517
 MonoBehaviour:
@@ -2486,6 +2488,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 80
   invulnerabilityDuration: 0.3
+  character: {fileID: 11400000, guid: 4106ebf5d004a4b14b7d4dab86425e35, type: 2}
+--- !u!114 &696962518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696962509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4a52b3eb5a34298a1d2a864bd9d7b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DiveSpecial
+  diveSpeed: 16
+  diveAngle: 45
+  minAirTime: 0.05
 --- !u!1 &705156774
 GameObject:
   m_ObjectHideFlags: 0
@@ -5999,6 +6017,8 @@ GameObject:
   - component: {fileID: 1614839884}
   - component: {fileID: 1614839885}
   - component: {fileID: 1614839886}
+  - component: {fileID: 1614839888}
+  - component: {fileID: 1614839887}
   m_Layer: 6
   m_Name: Player2
   m_TagString: Player
@@ -6173,6 +6193,7 @@ MonoBehaviour:
   leftKey: 61
   rightKey: 62
   jumpKey: 63
+  character: {fileID: 11400000, guid: c09cd0c7372ae4c088275e91467e0859, type: 2}
 --- !u!114 &1614839884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6185,12 +6206,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98267fd35fa634078b14d8761881c324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  character: {fileID: 11400000, guid: c09cd0c7372ae4c088275e91467e0859, type: 2}
   hitbox: {fileID: 135293936}
-  attackKey: 8
-  windupTime: 0.08
-  activeTime: 0.12
-  recoveryTime: 0.2
-  cooldown: 0.35
+  lightKey: 52
+  heavyKey: 9
+  specialKey: 54
   inputEnabled: 1
 --- !u!114 &1614839885
 MonoBehaviour:
@@ -6207,6 +6227,7 @@ MonoBehaviour:
   knockbackMultiplier: 0.6
   knockbackLift: 0.3
   applyHitstun: 1
+  character: {fileID: 11400000, guid: c09cd0c7372ae4c088275e91467e0859, type: 2}
 --- !u!114 &1614839886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6221,6 +6242,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   invulnerabilityDuration: 0.3
+  character: {fileID: 11400000, guid: c09cd0c7372ae4c088275e91467e0859, type: 2}
+--- !u!114 &1614839887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614839878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4a52b3eb5a34298a1d2a864bd9d7b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DiveSpecial
+  diveSpeed: 16
+  diveAngle: 45
+  minAirTime: 0.05
+--- !u!114 &1614839888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614839878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a14b1332bc9e9464595d1bb8f64277dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChargeSpecial
+  holdKey: 54
+  maxChargeTime: 1.2
+  minDamageMultiplier: 0.4
+  lungeSpeed: 12
+  spriteRenderer: {fileID: 0}
+  chargeTint: {r: 1, g: 0.6, b: 0.6, a: 1}
 --- !u!1 &1684376686
 GameObject:
   m_ObjectHideFlags: 0

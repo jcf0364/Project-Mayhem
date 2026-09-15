@@ -14,6 +14,8 @@ public class KnockbackReceiver : MonoBehaviour
     [Header("Hitstun")]
     [SerializeField] private bool applyHitstun = true;
 
+    [SerializeField] private CharacterData character;
+
     private Rigidbody2D rb;
     private Coroutine hitstunRoutine;
 
@@ -22,6 +24,10 @@ public class KnockbackReceiver : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (character != null)
+            knockbackMultiplier = character.knockbackMultiplier;
+
     }
 
     private void OnEnable()

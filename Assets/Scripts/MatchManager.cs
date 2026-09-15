@@ -61,6 +61,7 @@ public class MatchManager : MonoBehaviour
 
     public void BeginMatch()
     {
+        StopAllCoroutines();
         matchOver = false;
         livesP1 = livesPerPlayer;
         livesP2 = livesPerPlayer;
@@ -70,6 +71,7 @@ public class MatchManager : MonoBehaviour
         if (winScreen != null) winScreen.SetActive(false);
 
         UpdateLivesDisplay();
+        ResetRoundState();
     }
 
     private void ResetRoundState()
