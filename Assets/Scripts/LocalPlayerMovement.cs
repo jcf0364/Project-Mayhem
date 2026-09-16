@@ -37,6 +37,10 @@ public class LocalPlayerMovement : MonoBehaviour
     private float playerHalfWidth;
     private float playerHalfHeight;
 
+    // Animator
+    public Animator anim;
+    private float kb;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -70,14 +74,25 @@ public class LocalPlayerMovement : MonoBehaviour
 
         if (Keyboard.current[leftKey].isPressed)
         {
+            
             move = -1f;
             facingDirection = -1f;
         }
+        
 
         if (Keyboard.current[rightKey].isPressed)
         {
             move = 1f;
             facingDirection = 1f;
+        }
+        
+        if (move != 0f)
+        {
+            anim.SetBool("isMoving", true);
+        }
+        else
+        {
+            anim.SetBool("isMoving", false);
         }
 
         rb.linearVelocity = new Vector2(
@@ -94,13 +109,29 @@ public class LocalPlayerMovement : MonoBehaviour
 
             isGrounded = false;
         }
+        if (!isGrounded)
+        {
+            anim.SetBool("isJumping", true);
+        }
+        else
+        {
+            anim.SetBool("isJumping", false);
+        }
     }
 
     void HandleAttack()
     {
-        if (Keyboard.current[attackKey].wasPressedThisFrame)
+        
+        if (Keyboard.current[attackKey].isPressed)
         {
+            anim.SetBool("isAttacking", true);
             Attack();
+            
+        }
+        
+        else
+        {
+            anim.SetBool("isAttacking", false);
         }
     }
 
@@ -140,7 +171,7 @@ public class LocalPlayerMovement : MonoBehaviour
                             facingDirection,
                             1f
                         ).normalized;
-
+                    
                     otherRb.AddForce(
                         new Vector2(
                             knockbackDirection.x * knockback,
@@ -148,8 +179,10 @@ public class LocalPlayerMovement : MonoBehaviour
                         ),
                         ForceMode2D.Impulse
                     );
+                    
                 }
             }
+            
         }
     }
 
