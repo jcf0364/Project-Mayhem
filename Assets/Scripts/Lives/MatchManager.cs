@@ -212,6 +212,14 @@ public class MatchManager : MonoBehaviour
 
     public void RestartMatch()
     {
+        StopAllCoroutines();
         BeginMatch();
+        StartCoroutine(RestartCountdownRoutine());
+    }
+
+    private IEnumerator RestartCountdownRoutine()
+    {
+        if (roundCountdown != null)
+            yield return roundCountdown.RunCountdown();
     }
 }

@@ -28,6 +28,11 @@ public class LocalPlayerMovement : MonoBehaviour
     private bool isGrounded;
     private float facingDirection = 1f;
     public float FacingDirection => facingDirection;
+    [Header("Facing")]
+    [Tooltip("Tick if the source art faces right. P2's art faces left, so untick it there.")]
+    public bool spriteFacesRightByDefault = true;
+    [Tooltip("Which way this fighter faces at the start of a round. 1 = right, -1 = left.")]
+    public float startingFacing = 1f;
 
     private bool inputEnabled = true;
     public void SetInputEnabled(bool enabled) => inputEnabled = enabled;
@@ -61,11 +66,14 @@ public class LocalPlayerMovement : MonoBehaviour
             playerHalfWidth = spriteRenderer.bounds.extents.x;
             playerHalfHeight = spriteRenderer.bounds.extents.y;
         }
+        facingDirection = startingFacing;
+        UpdateFacing();
     }
 
     void Update()
     {
         HandleMovement();
+        UpdateFacing();
         UpdateAnimator();
     }
 
@@ -133,6 +141,15 @@ public class LocalPlayerMovement : MonoBehaviour
 
         if (knockbackReceiver != null)
             anim.SetBool("isKnockback", knockbackReceiver.InHitstun);
+    }
+
+    private void UpdateFacing()
+    {
+        if (spriteRenderer == null) return;
+
+        spriteRenderer.flipX = spriteFacesRightByDefault
+            ? facingDirection < 0f
+            : facingDirection > 0f;
     }
 
     // --- Audio hooks for the combat system ---

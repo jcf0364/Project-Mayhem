@@ -27,6 +27,14 @@ public class PlayerAttack : MonoBehaviour
 
     public bool IsAttacking => isAttacking;
 
+    private float baseHitboxX;
+
+    private void Awake()
+    {
+        if (hitbox != null)
+            baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
+    }
+
     private void Update()
     {
         if (!inputEnabled) return;
@@ -58,10 +66,22 @@ public class PlayerAttack : MonoBehaviour
         StartCoroutine(AttackRoutine());
     }
 
+    private void FaceHitbox()
+    {
+        var move = GetComponent<LocalPlayerMovement>();
+        if (move == null || hitbox == null) return;
+
+        var pos = hitbox.transform.localPosition;
+        pos.x = baseHitboxX * Mathf.Sign(move.FacingDirection);
+        hitbox.transform.localPosition = pos;
+    }
+
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
         lastAttackTime = Time.time;
+
+        FaceHitbox();
 
         // Attack swing sound.
         var move = GetComponent<LocalPlayerMovement>();
