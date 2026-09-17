@@ -6138,10 +6138,10 @@ MonoBehaviour:
   leftKey: 61
   rightKey: 62
   jumpKey: 63
-  jumpSound: {fileID: 0}
-  landingSound: {fileID: 0}
-  attackSound: {fileID: 0}
-  hitSound: {fileID: 0}
+  jumpSound: {fileID: 8300000, guid: 19ad356050454b345af9b15513739df9, type: 3}
+  landingSound: {fileID: 8300000, guid: 7b720a4b4454fb54b9cb9608e40d2676, type: 3}
+  attackSound: {fileID: 8300000, guid: 8ec3317e31d33a140bc23ae122d77ca7, type: 3}
+  hitSound: {fileID: 8300000, guid: 129df87573fc3c54db5282d53932e670, type: 3}
   specialMoveSound: {fileID: 0}
   spriteFacesRightByDefault: 1
   startingFacing: -1
