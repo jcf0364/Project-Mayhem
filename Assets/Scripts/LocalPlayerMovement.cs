@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
 
 public class LocalPlayerMovement : MonoBehaviour
 {
@@ -12,14 +11,6 @@ public class LocalPlayerMovement : MonoBehaviour
     public Key leftKey;
     public Key rightKey;
     public Key jumpKey;
-    public Key attackKey;
-
-    // Combat
-    public float attackRange = 1f;
-    public float baseKnockback = 5f;
-    public float knockbackUpForce = 3f;
-    public float damagePercent = 0f;
-    public float damagePerHit = 10f;
 
     // Sound effects
     public AudioClip jumpSound;
@@ -27,9 +18,6 @@ public class LocalPlayerMovement : MonoBehaviour
     public AudioClip attackSound;
     public AudioClip hitSound;
     public AudioClip specialMoveSound;
-
-    // UI
-    public TMP_Text damageText;
 
     // Components
     private Rigidbody2D rb;
@@ -39,6 +27,10 @@ public class LocalPlayerMovement : MonoBehaviour
     // Movement state
     private bool isGrounded;
     private float facingDirection = 1f;
+    public float FacingDirection => facingDirection;
+
+    private bool inputEnabled = true;
+    public void SetInputEnabled(bool enabled) => inputEnabled = enabled;
 
     // Screen boundaries
     private Vector2 screenBounds;
@@ -47,7 +39,6 @@ public class LocalPlayerMovement : MonoBehaviour
 
     // Animator
     public Animator anim;
-    private float kb;
 
     void Start()
     {
@@ -64,43 +55,45 @@ public class LocalPlayerMovement : MonoBehaviour
             playerHalfWidth = spriteRenderer.bounds.extents.x;
             playerHalfHeight = spriteRenderer.bounds.extents.y;
         }
-
-        UpdateDamageText();
     }
 
     void Update()
     {
         HandleMovement();
-        HandleAttack();
+    }
+
+    void LateUpdate()
+    {
+        var knockback = GetComponent<KnockbackReceiver>();
+        if (knockback != null && knockback.InHitstun) return;
+
         KeepPlayerInBounds();
     }
 
     void HandleMovement()
     {
+        if (!inputEnabled)
+        {
+            if (anim != null) anim.SetBool("isMoving", false);
+            return;
+        }
+
         float move = 0f;
 
         if (Keyboard.current[leftKey].isPressed)
         {
-            
             move = -1f;
             facingDirection = -1f;
         }
-        
 
         if (Keyboard.current[rightKey].isPressed)
         {
             move = 1f;
             facingDirection = 1f;
         }
-        
-        if (move != 0f)
-        {
-            anim.SetBool("isMoving", true);
-        }
-        else
-        {
-            anim.SetBool("isMoving", false);
-        }
+
+        if (anim != null)
+            anim.SetBool("isMoving", move != 0f);
 
         rb.linearVelocity = new Vector2(
             move * speed,
@@ -116,159 +109,61 @@ public class LocalPlayerMovement : MonoBehaviour
             );
 
             if (jumpSound != null && audioSource != null)
-            {
                 audioSource.PlayOneShot(jumpSound);
-            }
 
             isGrounded = false;
         }
-        if (!isGrounded)
-        {
-            anim.SetBool("isJumping", true);
-        }
-        else
-        {
-            anim.SetBool("isJumping", false);
-        }
+
+        if (anim != null)
+            anim.SetBool("isJumping", !isGrounded);
     }
 
-    void HandleAttack()
-    {
-        
-        if (Keyboard.current[attackKey].isPressed)
-        {
-            anim.SetBool("isAttacking", true);
-            Attack();
-            
-        }
-        
-        else
-        {
-            anim.SetBool("isAttacking", false);
-        }
-    }
+    // --- Audio hooks for the combat system ---
 
-    void Attack()
+    public void PlayAttackSound()
     {
-        // Whoosh sound when attack button is pressed
         if (attackSound != null && audioSource != null)
-        {
             audioSource.PlayOneShot(attackSound);
-        }
-
-        Vector2 attackPosition =
-            (Vector2)transform.position +
-            new Vector2(facingDirection, 0f);
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(
-            attackPosition,
-            attackRange
-        );
-
-        foreach (Collider2D hit in hits)
-        {
-            if (hit.gameObject != gameObject &&
-                hit.CompareTag("Player"))
-            {
-                LocalPlayerMovement otherPlayer =
-                    hit.GetComponent<LocalPlayerMovement>();
-
-                Rigidbody2D otherRb =
-                    hit.GetComponent<Rigidbody2D>();
-
-                if (otherPlayer != null && otherRb != null)
-                {
-                    // Quieter hit sound only when attack connects
-                    if (hitSound != null && audioSource != null)
-                    {
-                        audioSource.PlayOneShot(hitSound, 0.4f);
-                    }
-
-                    otherPlayer.damagePercent += damagePerHit;
-                    otherPlayer.UpdateDamageText();
-
-                    float knockback =
-                        baseKnockback +
-                        (otherPlayer.damagePercent * 0.05f);
-
-                    Vector2 knockbackDirection =
-                        new Vector2(
-                            facingDirection,
-                            1f
-                        ).normalized;
-                    
-                    otherRb.AddForce(
-                        new Vector2(
-                            knockbackDirection.x * knockback,
-                            knockbackDirection.y * knockbackUpForce
-                        ),
-                        ForceMode2D.Impulse
-                    );
-                    
-                }
-            }
-            
-        }
     }
 
-    // Ready for when special moves are implemented
+    public void PlayHitSound()
+    {
+        if (hitSound != null && audioSource != null)
+            audioSource.PlayOneShot(hitSound, 0.4f);
+    }
+
     public void PlaySpecialMoveSound()
     {
         if (specialMoveSound != null && audioSource != null)
-        {
             audioSource.PlayOneShot(specialMoveSound);
-        }
     }
 
     void KeepPlayerInBounds()
     {
         Vector2 pos = transform.position;
 
-        float clampedX = Mathf.Clamp(
+        pos.x = Mathf.Clamp(
             pos.x,
             -screenBounds.x + playerHalfWidth,
             screenBounds.x - playerHalfWidth
         );
 
-        pos.x = clampedX;
-
-        float clampedY = Mathf.Clamp(
+        pos.y = Mathf.Clamp(
             pos.y,
             -screenBounds.y - 1f,
             screenBounds.y - playerHalfHeight
         );
 
-        pos.y = clampedY;
-
         if (pos.y > -screenBounds.y)
-        {
             transform.position = pos;
-        }
-    }
-
-    void UpdateDamageText()
-    {
-        if (damageText != null)
-        {
-            string playerLabel =
-                gameObject.name == "Player1" ? "P1" : "P2";
-
-            damageText.text =
-                playerLabel + ": " + damagePercent + "%";
-        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            // Play landing sound only when arriving on the ground
-            if (!isGrounded &&
-                landingSound != null &&
-                audioSource != null)
-            {
+            if (!isGrounded && landingSound != null && audioSource != null)
                 audioSource.PlayOneShot(landingSound, 0.5f);
-            }
 
             isGrounded = true;
         }
@@ -277,25 +172,12 @@ public class LocalPlayerMovement : MonoBehaviour
     void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             isGrounded = true;
-        }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             isGrounded = false;
-        }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireSphere(
-            (Vector2)transform.position +
-            new Vector2(facingDirection, 0f),
-            attackRange
-        );
     }
 }
