@@ -1,31 +1,43 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Pause : MonoBehaviour {
+public class Pause : MonoBehaviour
+{
+    public GameObject Container;
+    public GameObject mainMenuPanel;
+    public GameObject player1;
+    public GameObject player2;
+    public GameObject ground;
 
-public GameObject Container;
-
-    // Update is called once per frame
     void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            Container.SetActive(true); 
+            Container.SetActive(true);
             Time.timeScale = 0;
         }
     }
 
-    public void ResumeButton(){
+    public void ResumeButton()
+    {
         Container.SetActive(false);
         Time.timeScale = 1;
     }
 
-    public void OptionsButton(){
-        
+    public void OptionsButton()
+    {
     }
 
-    public void MainMenuButton(){
-        //when main menu has been developed.....
-        
+    public void MainMenuButton()
+    {
+        Container.SetActive(false);
+
+        player1.SetActive(false);
+        player2.SetActive(false);
+        ground.SetActive(false);
+
+        mainMenuPanel.SetActive(true);
+
+        Time.timeScale = 0;
     }
 }
