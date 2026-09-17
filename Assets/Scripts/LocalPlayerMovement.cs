@@ -37,6 +37,10 @@ public class LocalPlayerMovement : MonoBehaviour
     private float playerHalfWidth;
     private float playerHalfHeight;
 
+    // Combat
+    private PlayerAttack playerAttack;
+    private KnockbackReceiver knockbackReceiver;
+
     // Animator
     public Animator anim;
 
@@ -45,6 +49,8 @@ public class LocalPlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
+        playerAttack = GetComponent<PlayerAttack>();
+        knockbackReceiver = GetComponent<KnockbackReceiver>();
 
         screenBounds = Camera.main.ScreenToWorldPoint(
             new Vector2(Screen.width, Screen.height)
@@ -60,6 +66,7 @@ public class LocalPlayerMovement : MonoBehaviour
     void Update()
     {
         HandleMovement();
+        UpdateAnimator();
     }
 
     void LateUpdate()
@@ -113,9 +120,19 @@ public class LocalPlayerMovement : MonoBehaviour
 
             isGrounded = false;
         }
+    }
 
-        if (anim != null)
-            anim.SetBool("isJumping", !isGrounded);
+    private void UpdateAnimator()
+    {
+        if (anim == null) return;
+
+        anim.SetBool("isJumping", !isGrounded);
+
+        if (playerAttack != null)
+            anim.SetBool("isAttacking", playerAttack.IsAttacking);
+
+        if (knockbackReceiver != null)
+            anim.SetBool("isKnockback", knockbackReceiver.InHitstun);
     }
 
     // --- Audio hooks for the combat system ---
