@@ -28,6 +28,10 @@ public class MatchManager : MonoBehaviour
     [Header("Round Flow")]
     [SerializeField] private RoundCountdown roundCountdown;
 
+    [SerializeField] private GameObject mainMenuPanel;
+
+    
+
     private int livesP1;
     private int livesP2;
     private bool matchOver;
@@ -221,5 +225,24 @@ public class MatchManager : MonoBehaviour
     {
         if (roundCountdown != null)
             yield return roundCountdown.RunCountdown();
+    }
+
+    public void ReturnToMenu()
+    {
+        Time.timeScale = 1f;
+
+        StopAllCoroutines();
+
+        if (winScreen != null) winScreen.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+
+        SetAllControlEnabled(false);
+    }
+
+    /// Called by the main menu's PLAY button.
+    public void StartNewMatch()
+    {
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        RestartMatch();
     }
 }
