@@ -27,17 +27,19 @@ public class MatchManager : MonoBehaviour
    
     [Header("Round Flow")]
     [SerializeField] private RoundCountdown roundCountdown;
-
     [SerializeField] private GameObject mainMenuPanel;
 
-    
+   
 
+    
+    private bool firstMatch = true;
     private int livesP1;
     private int livesP2;
     private bool matchOver;
 
     private Vector3 startPosP1;
     private Vector3 startPosP2;
+
 
     private void Awake()
     {
@@ -218,6 +220,13 @@ public class MatchManager : MonoBehaviour
     {
         StopAllCoroutines();
         BeginMatch();
+
+        if (firstMatch)
+        {
+            firstMatch = false;
+            return;
+        }
+        
         StartCoroutine(RestartCountdownRoutine());
     }
 
