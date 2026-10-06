@@ -238,14 +238,7 @@ public class MatchManager : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        Time.timeScale = 1f;
-
-        StopAllCoroutines();
-
-        if (winScreen != null) winScreen.SetActive(false);
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
-
-        SetAllControlEnabled(false);
+        SceneLoader.Load(SceneLoader.MainMenu);
     }
 
     /// Called by the main menu's PLAY button.

@@ -4,40 +4,33 @@ using UnityEngine.InputSystem;
 public class Pause : MonoBehaviour
 {
     public GameObject Container;
-    public GameObject mainMenuPanel;
-    public GameObject player1;
-    public GameObject player2;
-    public GameObject ground;
+
+    private bool isPaused;
 
     void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            Container.SetActive(true);
-            Time.timeScale = 0;
+            if (isPaused) ResumeButton();
+            else PauseGame();
         }
+    }
+
+    private void PauseGame()
+    {
+        Container.SetActive(true);
+        Time.timeScale = 0f;
+        isPaused = true;
     }
 
     public void ResumeButton()
     {
         Container.SetActive(false);
         Time.timeScale = 1;
+        isPaused = false;
     }
 
     public void OptionsButton()
     {
-    }
-
-    public void MainMenuButton()
-    {
-        Container.SetActive(false);
-
-        player1.SetActive(false);
-        player2.SetActive(false);
-        ground.SetActive(false);
-
-        mainMenuPanel.SetActive(true);
-
-        Time.timeScale = 0;
     }
 }
