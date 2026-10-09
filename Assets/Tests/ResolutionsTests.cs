@@ -5,6 +5,7 @@ namespace Mayhem.Tests
 {
     public class ResolutionsTests
     {
+        // A small fake list of screen modes so that no real and specific monitor is needed
         private static List<ResolutionInfo> Sample()
         {
             return new List<ResolutionInfo>
