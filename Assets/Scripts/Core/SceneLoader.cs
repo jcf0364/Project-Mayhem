@@ -17,9 +17,9 @@ public class SceneLoader : MonoBehaviour
     public void LoadCharacterSelect() => Load(CharacterSelect);
     public void LoadArenaSelect() => Load(ArenaSelect);
     public void LoadBattle() => Load(Battle);
-    public void LoadBattle() => Load(Battle1);
-    public void LoadBattle() => Load(Battle2);
-    public void LoadBattle() => Load(Battle3);
+    public void LoadBattle1() => Load(Battle1);
+    public void LoadBattle2() => Load(Battle2);
+    public void LoadBattle3() => Load(Battle3);
     
 
     public static void Load(string sceneName)
