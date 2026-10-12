@@ -8,11 +8,19 @@ public class SceneLoader : MonoBehaviour
     public const string CharacterSelect = "CharacterSelect";
     public const string ArenaSelect = "ArenaSelect";
     public const string Battle = "Battle";
+    public const string Battle1 = "Battle Arena 1";
+    public const string Battle2 = "Battle Arena 2";
+    public const string Battle3 = "Battle Arena 3";
+
 
     public void LoadMainMenu() => Load(MainMenu);
     public void LoadCharacterSelect() => Load(CharacterSelect);
     public void LoadArenaSelect() => Load(ArenaSelect);
     public void LoadBattle() => Load(Battle);
+    public void LoadBattle() => Load(Battle1);
+    public void LoadBattle() => Load(Battle2);
+    public void LoadBattle() => Load(Battle3);
+    
 
     public static void Load(string sceneName)
     {
