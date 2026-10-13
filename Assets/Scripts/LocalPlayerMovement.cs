@@ -26,6 +26,11 @@ public class LocalPlayerMovement : MonoBehaviour
 
     // Movement state
     private bool isGrounded;
+
+    // Read by BlockState to stop air blocking. Read-only on purpose -
+    // only the collision callbacks in this script should change it.
+    public bool IsGrounded => isGrounded;
+    private BlockState blockState;
     private float facingDirection = 1f;
     public float FacingDirection => facingDirection;
     [Header("Facing")]
@@ -35,7 +40,9 @@ public class LocalPlayerMovement : MonoBehaviour
     public float startingFacing = 1f;
 
     private bool inputEnabled = true;
+    public bool InputEnabled => inputEnabled;
     public void SetInputEnabled(bool enabled) => inputEnabled = enabled;
+    
 
     // Screen boundaries
     private Vector2 screenBounds;
@@ -55,6 +62,7 @@ public class LocalPlayerMovement : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
         playerAttack = GetComponent<PlayerAttack>();
+        blockState = GetComponent<BlockState>();
         knockbackReceiver = GetComponent<KnockbackReceiver>();
 
         screenBounds = Camera.main.ScreenToWorldPoint(
@@ -89,6 +97,22 @@ public class LocalPlayerMovement : MonoBehaviour
     {
         if (!inputEnabled)
         {
+            if (anim != null) anim.SetBool("isMoving", false);
+            return;
+        }
+
+        // Blocking roots the fighter in place.
+        //
+        // This deliberately does NOT use SetInputEnabled. That flag is
+        // already shared by hitstun and the round countdown — if blocking
+        // also wrote to it, releasing block could hand control back to a
+        // fighter who is still meant to be stunned.
+        if (blockState != null && blockState.IsBlocking)
+        {
+            // Horizontal only. A blocking fighter knocked into the air
+            // should still fall normally.
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
             if (anim != null) anim.SetBool("isMoving", false);
             return;
         }
