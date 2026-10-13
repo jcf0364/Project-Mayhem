@@ -14,8 +14,8 @@ Project Mayhem is a fast paced 2D platform fighter where players battle on a pla
 
 ## Controls
 Player 1: Movement: WASD, Attack: F \
-Player 2: Movement: Arrows, Attack: 
-
+Player 2: Movement: Arrows, Attack: Shift \
+Note: Controls can be Remapped in the options menu
 
 ### Prerequisites
 
