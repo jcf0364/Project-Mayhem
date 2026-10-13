@@ -51,11 +51,17 @@ public class PlayerAttack : MonoBehaviour
     // Stores the hitbox's original horizontal position
     private float baseHitboxX;
 
+    private BlockState blockState;
+
     private void Awake()
     {
         // Save the original hitbox position
         if (hitbox != null)
             baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
+        
+        // Cached rather than fetched per press — TryAttack can run every
+        // frame the key is mashed.
+        blockState = GetComponent<BlockState>();
     }
 
     private void Update()
@@ -102,6 +108,13 @@ public class PlayerAttack : MonoBehaviour
         // Prevent attacking before cooldown finishes
         if (Time.time - lastAttackTime < cooldown)
             return;
+        // Checked before the cooldown so a blocked press is rejected
+        // outright rather than quietly consuming the attack timer.
+        if (blockState != null && blockState.IsBlocking) return;
+
+        
+        if (isAttacking) return;
+        if (Time.time - lastAttackTime < cooldown) return;
 
         StartCoroutine(AttackRoutine());
     }

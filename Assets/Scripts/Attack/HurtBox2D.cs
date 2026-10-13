@@ -17,23 +17,51 @@ public class HurtBox2D : MonoBehaviour
 
     public int TotalDamageTaken { get; private set; }
 
+    private BlockState blockState;
+
     public void Awake()
     {
         GetComponent<Collider2D>().isTrigger = true;
+
+        // BlockState lives on the fighter; this hurtbox is a child of it.
+        blockState = GetComponentInParent<BlockState>();
     }
 
-    /// Called by Hitbox2D when a hit connects.
+    /// Single funnel for every incoming hit. The block reduction happens
+    /// here, not in PlayerHealth, because health, knockback and match stats
+    /// all subscribe to OnHitReceived — softening the HitInfo once means
+    /// all three see the blocked values without any of them knowing that
+    /// blocking exists.
     public void ReceiveHit(HitInfo info)
     {
+        // Hurtbox multiplier first — a head hurtbox should scale the raw
+        // damage before the guard reduces it, not after.
         info.Damage = Mathf.RoundToInt(info.Damage * damageMultiplier);
+
+        bool blocked = blockState != null
+                       && blockState.IsBlockingAgainst(info.SourcePosition);
+
+        if (blocked)
+        {
+            info.Damage = Mathf.RoundToInt(info.Damage * blockState.DamageThrough);
+            info.KnockbackForce *= blockState.KnockbackThrough;
+
+            // Zeroed, not reduced. This is the real payoff of blocking:
+            // the attacker is still in recovery while the defender can
+            // already act. Merely shortening hitstun would leave both
+            // recovering together and give the defender nothing.
+            info.HitstunDuration = 0f;
+
+            blockState.PlayBlockSound();
+        }
+
         TotalDamageTaken += info.Damage;
 
         if (logHits)
-            Debug.Log($"{transform.root.name} hit for {info.Damage} " + $"(total {TotalDamageTaken}) by {info.Source.name}");
+            Debug.Log($"{transform.root.name} {(blocked ? "BLOCKED" : "hit")} " +
+                      $"for {info.Damage} (total {TotalDamageTaken}) by {info.Source.name}");
 
-        
         OnHitReceived?.Invoke(info);
-
     }
 
     public void ResetDamageCounter() => TotalDamageTaken = 0;

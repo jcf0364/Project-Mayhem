@@ -2615,6 +2615,7 @@ GameObject:
   - component: {fileID: 696962516}
   - component: {fileID: 696962519}
   - component: {fileID: 696962520}
+  - component: {fileID: 696962521}
   m_Layer: 6
   m_Name: Player1
   m_TagString: Player
@@ -2982,6 +2983,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &696962521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696962509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a242626f898c54e848a12db7df9ab2aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlockState
+  blockKey: 33
+  damageThrough: 0.2
+  knockbackThrough: 0.3
+  blockSound: {fileID: 0}
+  blockTint: {r: 0.6, g: 0.8, b: 1, a: 1}
 --- !u!1 &705156774
 GameObject:
   m_ObjectHideFlags: 0
@@ -6142,6 +6160,7 @@ GameObject:
   - component: {fileID: 1614839887}
   - component: {fileID: 1614839888}
   - component: {fileID: 1614839889}
+  - component: {fileID: 1614839890}
   m_Layer: 6
   m_Name: Player2
   m_TagString: Player
@@ -6509,6 +6528,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1614839890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614839878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a242626f898c54e848a12db7df9ab2aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlockState
+  blockKey: 64
+  damageThrough: 0.2
+  knockbackThrough: 0.3
+  blockSound: {fileID: 0}
+  blockTint: {r: 0.6, g: 0.8, b: 1, a: 1}
 --- !u!1 &1616301468
 GameObject:
   m_ObjectHideFlags: 0
