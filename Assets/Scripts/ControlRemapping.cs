@@ -5,71 +5,59 @@ using TMPro;
 
 public class ControlRemapping : MonoBehaviour
 {
-    // References to both players' movement scripts
+    // References to players (optional in MainMenu scene)
     public LocalPlayerMovement player1Movement;
     public LocalPlayerMovement player2Movement;
-
-    // References to both players' attack scripts
     public PlayerAttack player1Attack;
     public PlayerAttack player2Attack;
 
-    // References to the menu panels
+    // Menu panels
     public GameObject controlsPanel;
     public GameObject optionsPanel;
 
-    // Text displayed on each player's control buttons
+    // Keybind button texts
     // Order: Left, Right, Jump, Attack
     public TMP_Text[] player1KeyTexts;
     public TMP_Text[] player2KeyTexts;
 
-    // Tracks the control currently being remapped
-    // -1 means no control is selected
+    // Tracks the selected control
     private int selectedPlayer = -1;
     private int selectedAction = -1;
 
-    // Prevent both menu panels from loading saved controls twice
-    private static bool controlsLoaded = false;
-
-    // Default controls for both players
-    private readonly Key[,] defaultKeys = new Key[2, 4]
+    // Default keyboard controls
+    private static readonly Key[,] defaultKeys =
     {
         { Key.A, Key.D, Key.W, Key.F },
         { Key.LeftArrow, Key.RightArrow, Key.UpArrow, Key.RightShift }
     };
 
-    private void Awake()
-    {
-        // Load saved controls once when the game starts
-        if (!controlsLoaded)
-        {
-            LoadControls();
-            controlsLoaded = true;
-        }
-    }
+    // Notifies gameplay scripts when controls change
+    public static event System.Action OnBindingsChanged;
 
     private void Start()
     {
-        // Display the current keybindings
         RefreshAllKeyTexts();
     }
 
     private void OnEnable()
     {
-        // Update button labels whenever this panel is opened
-        if (player1Movement != null && player2Movement != null &&
-            player1Attack != null && player2Attack != null)
-        {
-            RefreshAllKeyTexts();
-        }
+        RefreshAllKeyTexts();
+    }
+
+    private void OnDisable()
+    {
+        // Cancel remapping when the panel closes
+        selectedPlayer = -1;
+        selectedAction = -1;
     }
 
     private void Update()
     {
-        // Only check keyboard input while remapping
+        // Only detect keys when remapping
         if (selectedPlayer == -1 || Keyboard.current == null)
             return;
 
-        // Check which key the player pressed
+        // Check for a pressed key
         foreach (Key key in System.Enum.GetValues(typeof(Key)))
         {
             if (key == Key.None)
@@ -77,159 +65,131 @@ public class ControlRemapping : MonoBehaviour
 
             if (Keyboard.current[key].wasPressedThisFrame)
             {
-                // Assign the new key
+                // Reserve Escape for menu navigation
+                if (key == Key.Escape)
+                {
+                    RestoreSelectedKeyText();
+                    selectedPlayer = -1;
+                    selectedAction = -1;
+                    return;
+                }
+
                 AssignKey(key);
                 break;
             }
         }
     }
 
-    // Called when the player clicks a keybind button
+    // Starts remapping the selected action
     public void StartRemapping(int player, int action)
     {
-        // Check that the player and action are valid
         if (player < 1 || player > 2 || action < 0 || action > 3)
             return;
 
-        // Restore any previously selected button
         RestoreSelectedKeyText();
 
-        // Store the selected player and action
         selectedPlayer = player;
         selectedAction = action;
 
-        // Find the correct button text
-        TMP_Text label = player == 1
-            ? player1KeyTexts[action]
-            : player2KeyTexts[action];
+        TMP_Text label = GetLabel(player, action);
 
-        // Ask the player to press a new key
-        label.text = "PRESS KEY";
+        if (label != null)
+            label.text = "PRESS KEY";
     }
 
-    // Assigns a new key to the selected action
+    // Assigns and saves the new key
     private void AssignKey(Key newKey)
     {
         int player = selectedPlayer;
         int action = selectedAction;
 
-        // Apply the new key to the selected player
-        SetKey(player, action, newKey);
+        // Store the selected key
+        string saveName = GetSaveName(player, action);
 
-        // Save the custom keybinding
-        SaveKey(player, action, newKey);
+        PlayerPrefs.SetInt(saveName, (int)newKey);
+        PlayerPrefs.Save();
 
-        // Finish remapping
+        // Apply to existing players, if available
+        ApplyControlsToPlayers();
+
         selectedPlayer = -1;
         selectedAction = -1;
 
-        // Update the labels
+        // Inform gameplay components about the change
+        OnBindingsChanged?.Invoke();
+
         RefreshAllKeyTexts();
     }
 
-    // Changes a player's movement or attack key
-    private void SetKey(int player, int action, Key newKey)
+    // Generates a unique save name
+    private static string GetSaveName(int player, int action)
     {
-        LocalPlayerMovement movement = player == 1
-            ? player1Movement
-            : player2Movement;
+        return "P" + player + "_Control_" + action;
+    }
 
-        PlayerAttack attack = player == 1
-            ? player1Attack
-            : player2Attack;
+    // Gets a saved key or its default
+    public static Key GetSavedKey(int player, int action)
+    {
+        if (player < 1 || player > 2 || action < 0 || action > 3)
+            return Key.None;
 
-        switch (action)
+        string saveName = GetSaveName(player, action);
+
+        Key defaultKey = defaultKeys[player - 1, action];
+
+        if (!PlayerPrefs.HasKey(saveName))
+            return defaultKey;
+
+        Key savedKey = (Key)PlayerPrefs.GetInt(saveName);
+
+        // Ignore invalid saved values
+        if (savedKey == Key.None ||
+            !System.Enum.IsDefined(typeof(Key), savedKey))
+            return defaultKey;
+
+        return savedKey;
+    }
+
+    // Applies saved controls when player objects exist
+    private void ApplyControlsToPlayers()
+    {
+        ApplyPlayerControls(1, player1Movement, player1Attack);
+        ApplyPlayerControls(2, player2Movement, player2Attack);
+    }
+
+    // Updates movement and attack keys
+    public static void ApplyPlayerControls(
+        int player,
+        LocalPlayerMovement movement,
+        PlayerAttack attack)
+    {
+        if (movement != null)
         {
-            case 0:
-                movement.leftKey = newKey;
-                break;
+            movement.leftKey = GetSavedKey(player, 0);
+            movement.rightKey = GetSavedKey(player, 1);
+            movement.jumpKey = GetSavedKey(player, 2);
+        }
 
-            case 1:
-                movement.rightKey = newKey;
-                break;
-
-            case 2:
-                movement.jumpKey = newKey;
-                break;
-
-            case 3:
-                attack.SetAttackKey(newKey);
-                break;
+        if (attack != null)
+        {
+            attack.SetAttackKey(GetSavedKey(player, 3));
         }
     }
 
-    // Saves a custom keybinding
-    private void SaveKey(int player, int action, Key key)
+    // Returns the correct text component
+    private TMP_Text GetLabel(int player, int action)
     {
-        string saveName = "P" + player + "_Control_" + action;
+        TMP_Text[] texts = player == 1
+            ? player1KeyTexts
+            : player2KeyTexts;
 
-        // Store the key as an integer
-        PlayerPrefs.SetInt(saveName, (int)key);
+        if (texts == null || action >= texts.Length)
+            return null;
 
-        // Save changes
-        PlayerPrefs.Save();
+        return texts[action];
     }
 
-    // Loads saved controls for both players
-    private void LoadControls()
-    {
-        for (int player = 1; player <= 2; player++)
-        {
-            for (int action = 0; action < 4; action++)
-            {
-                string saveName = "P" + player + "_Control_" + action;
-
-                // Use the default key if no custom key was saved
-                Key key = defaultKeys[player - 1, action];
-
-                if (PlayerPrefs.HasKey(saveName))
-                {
-                    Key savedKey = (Key)PlayerPrefs.GetInt(saveName);
-
-                    // Only load valid keyboard keys
-                    if (savedKey != Key.None &&
-                        System.Enum.IsDefined(typeof(Key), savedKey))
-                    {
-                        key = savedKey;
-                    }
-                }
-
-                // Apply the loaded or default key
-                SetKey(player, action, key);
-            }
-        }
-    }
-
-    // Gets the currently assigned key
-    private Key GetCurrentKey(int player, int action)
-    {
-        LocalPlayerMovement movement = player == 1
-            ? player1Movement
-            : player2Movement;
-
-        PlayerAttack attack = player == 1
-            ? player1Attack
-            : player2Attack;
-
-        switch (action)
-        {
-            case 0:
-                return movement.leftKey;
-
-            case 1:
-                return movement.rightKey;
-
-            case 2:
-                return movement.jumpKey;
-
-            case 3:
-                return attack.GetAttackKey();
-        }
-
-        return Key.None;
-    }
-
-    // Converts key names into shorter labels for the UI
+    // Formats keys for the UI
     private string FormatKey(Key key)
     {
         switch (key)
@@ -260,88 +220,69 @@ public class ControlRemapping : MonoBehaviour
         }
     }
 
-    // Updates all the displayed control buttons
+    // Refreshes all eight keybind labels
     private void RefreshAllKeyTexts()
     {
-        if (player1Movement == null || player2Movement == null ||
-            player1Attack == null || player2Attack == null)
-            return;
-
-        for (int action = 0; action < 4; action++)
+        for (int player = 1; player <= 2; player++)
         {
-            // Update Player 1 labels
-            if (player1KeyTexts != null &&
-                action < player1KeyTexts.Length &&
-                player1KeyTexts[action] != null)
+            for (int action = 0; action < 4; action++)
             {
-                player1KeyTexts[action].text =
-                    FormatKey(GetCurrentKey(1, action));
-            }
+                TMP_Text label = GetLabel(player, action);
 
-            // Update Player 2 labels
-            if (player2KeyTexts != null &&
-                action < player2KeyTexts.Length &&
-                player2KeyTexts[action] != null)
-            {
-                player2KeyTexts[action].text =
-                    FormatKey(GetCurrentKey(2, action));
+                if (label != null)
+                {
+                    Key currentKey = GetSavedKey(player, action);
+                    label.text = FormatKey(currentKey);
+                }
             }
         }
     }
 
-    // Restores the displayed key if remapping is cancelled
+    // Restores the text when remapping is cancelled
     private void RestoreSelectedKeyText()
     {
         if (selectedPlayer == -1 || selectedAction == -1)
             return;
 
-        TMP_Text label = selectedPlayer == 1
-            ? player1KeyTexts[selectedAction]
-            : player2KeyTexts[selectedAction];
+        TMP_Text label = GetLabel(selectedPlayer, selectedAction);
 
-        label.text = FormatKey(
-            GetCurrentKey(selectedPlayer, selectedAction)
-        );
+        if (label != null)
+        {
+            Key currentKey = GetSavedKey(
+                selectedPlayer,
+                selectedAction
+            );
+
+            label.text = FormatKey(currentKey);
+        }
     }
 
-    // -----------------------------------------
-    // RESET DEFAULT CONTROLS
-    // -----------------------------------------
-
-    // Restores both players to their original controls
+    // Resets both players to default controls
     public void ResetToDefaults()
     {
-        // Cancel any unfinished remapping
         selectedPlayer = -1;
         selectedAction = -1;
 
-        // Reset every control for both players
+        // Remove all saved custom keybinds
         for (int player = 1; player <= 2; player++)
         {
             for (int action = 0; action < 4; action++)
             {
-                // Restore the original key
-                Key defaultKey = defaultKeys[player - 1, action];
-
-                SetKey(player, action, defaultKey);
-
-                // Remove the saved custom keybinding
-                string saveName = "P" + player + "_Control_" + action;
-                PlayerPrefs.DeleteKey(saveName);
+                PlayerPrefs.DeleteKey(GetSaveName(player, action));
             }
         }
 
-        // Save the reset settings
         PlayerPrefs.Save();
 
-        // Update the button labels
+        // Apply the default keys
+        ApplyControlsToPlayers();
+
+        OnBindingsChanged?.Invoke();
+
         RefreshAllKeyTexts();
     }
 
-    // -----------------------------------------
-    // PLAYER 1 CONTROL BUTTONS
-    // -----------------------------------------
-
+    // Player 1 remapping buttons
     public void RemapP1Left()
     {
         StartRemapping(1, 0);
@@ -362,10 +303,7 @@ public class ControlRemapping : MonoBehaviour
         StartRemapping(1, 3);
     }
 
-    // -----------------------------------------
-    // PLAYER 2 CONTROL BUTTONS
-    // -----------------------------------------
-
+    // Player 2 remapping buttons
     public void RemapP2Left()
     {
         StartRemapping(2, 0);
@@ -386,11 +324,7 @@ public class ControlRemapping : MonoBehaviour
         StartRemapping(2, 3);
     }
 
-    // -----------------------------------------
-    // MENU NAVIGATION
-    // -----------------------------------------
-
-    // Opens Controls from the Options menu
+    // Opens the Controls menu
     public void OpenControls()
     {
         if (optionsPanel != null)
@@ -402,16 +336,14 @@ public class ControlRemapping : MonoBehaviour
         RefreshAllKeyTexts();
     }
 
-    // Returns from Controls to Options
+    // Returns to the Options menu
     public void ReturnToOptions()
     {
-        // Restore the label if remapping was cancelled
         RestoreSelectedKeyText();
 
         selectedPlayer = -1;
         selectedAction = -1;
 
-        // Show Options and hide Controls
         if (optionsPanel != null)
             optionsPanel.SetActive(true);
 
