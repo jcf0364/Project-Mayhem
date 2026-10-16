@@ -2029,6 +2029,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 11500000, guid: 5598f27a1a4029f408c9358f4deba948, type: 3}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1818245953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2079,6 +2091,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5598f27a1a4029f408c9358f4deba948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  animmayhem: {fileID: 9100000, guid: 798e842666670b14a8693f764fa2d1f3, type: 2}
+  animangelo: {fileID: 9100000, guid: 70eca828bc1dcc0429c9881a27552303, type: 2}
+  animplayer: {fileID: 0}
+  player: {fileID: 0}
+  text: {fileID: 1455911342}
 --- !u!1 &2059391711
 GameObject:
   m_ObjectHideFlags: 0
