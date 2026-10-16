@@ -515,6 +515,13 @@ public class AIController : MonoBehaviour
         bool faceRight =
             target.position.x >= transform.position.x;
 
+        // Keep the shared facing value in step. KnockbackReceiver and
+        // BlockState both read movement.FacingDirection, and with input
+        // disabled nothing else ever updates it — so knockback fired
+        // the wrong way.
+        if (movement != null)
+            movement.SetFacingDirection(faceRight ? 1f : -1f);
+
         if (spriteRenderer != null && movement != null)
         {
             spriteRenderer.flipX =

@@ -1,16 +1,16 @@
-
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class AIDifficultySelection : MonoBehaviour
 {
-    // Saves the selected difficulty and starts the AI battle
+    // Saves the selected difficulty and starts the AI battle.
     private void StartAIBattle(AIController.Difficulty difficulty)
     {
         PlayerPrefs.SetInt("AIDifficulty", (int)difficulty);
         PlayerPrefs.Save();
 
-        SceneManager.LoadScene("Battle AI");
+        // Go through SceneLoader so Time.timeScale gets reset.
+        // Loading directly meant a paused game stayed frozen.
+        SceneLoader.Load("Battle AI");
     }
 
     // Called by the Easy button

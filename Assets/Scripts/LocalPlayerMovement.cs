@@ -176,6 +176,12 @@ public class LocalPlayerMovement : MonoBehaviour
             : facingDirection > 0f;
     }
 
+    /// Lets the AI steer facing, since it bypasses keyboard input.
+    public void SetFacingDirection(float dir)
+    {
+        facingDirection = dir >= 0f ? 1f : -1f;
+    }
+
     // --- Audio hooks for the combat system ---
 
     public void PlayAttackSound()

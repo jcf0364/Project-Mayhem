@@ -224,6 +224,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 672080191}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: LoadProfileSelect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &45337066
@@ -504,8 +516,9 @@ MonoBehaviour:
   player1CharacterIndex: 0
   player2CharacterIndex: 1
   arenaIndex: 0
-  player1Name: Player 1
-  player2Name: Player 2
+  player1ProfileId: 
+  player2ProfileId: 
+  player2IsGuest: 0
 --- !u!4 &72418422
 Transform:
   m_ObjectHideFlags: 0

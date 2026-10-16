@@ -180,8 +180,18 @@ public class MatchManager : MonoBehaviour
         yield return new WaitForSeconds(roundResetDelay);
 
         if (winnerText != null)
-            winnerText.text = $"PLAYER {winnerId} WINS";
-        
+        {
+            // Profile name when one is signed in, "Player 1" / "Guest"
+            // otherwise. GameSession handles the fallback.
+            string winnerName = GameSession.Instance != null
+                ? (winnerId == 1
+                    ? GameSession.Instance.GetPlayer1Name()
+                    : GameSession.Instance.GetPlayer2Name())
+                : $"PLAYER {winnerId}";
+
+            winnerText.text = $"{winnerName.ToUpper()} WINS";
+        }
+
         ShowStats();
 
         if (winScreen != null)
@@ -191,6 +201,11 @@ public class MatchManager : MonoBehaviour
     private void ShowStats()
     {
         if (stats == null) return;
+
+        string nameP1 = GameSession.Instance != null
+            ? GameSession.Instance.GetPlayer1Name() : "PLAYER 1";
+        string nameP2 = GameSession.Instance != null
+            ? GameSession.Instance.GetPlayer2Name() : "PLAYER 2";
 
         if (statsTextP1 != null)
             statsTextP1.text =
