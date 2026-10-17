@@ -117,6 +117,15 @@ public class LocalPlayerMovement : MonoBehaviour
             return;
         }
 
+        // Attacking roots the fighter in place, like blocking
+        if (playerAttack != null && playerAttack.IsAttacking)
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
+            if (anim != null) anim.SetBool("isMoving", false);
+            return;
+        }
+
         float move = 0f;
 
         if (Keyboard.current[leftKey].isPressed)

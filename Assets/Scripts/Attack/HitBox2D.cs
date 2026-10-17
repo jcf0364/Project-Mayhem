@@ -44,6 +44,14 @@ public class HitBox2D : MonoBehaviour
         col.enabled = false;
     }
 
+    // Called by PlayerAttack before each combo hit
+    public void SetStats(int newDamage, float newKnockback, float newHitstun)
+    {
+        damage = newDamage;
+        knockback = newKnockback;
+        hitstun = newHitstun;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         var hurtbox = other.GetComponent<HurtBox2D>();
