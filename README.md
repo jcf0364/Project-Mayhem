@@ -50,6 +50,17 @@ Run the Built Game:
 4. Run the executable to launch the game.
 5. Select Play from the main menu to start a match.
 
-
+## How to Play
+1. Launch Project Mayhem
+2. Select Play from the main menu
+3. Login to your profiles (guest login available)
+4. Choose your characters
+5. Select an arena
+6. Wait for the round countdown to finish, then battle beigns
+7. Attack your opponent while avoiding incoming attacks.
+8. Reduce your opponent's health and use the lives system to your advantage.
+9. Continue fighting until one player has no lives remaining.
+10 View the results screen to see the match outcome. \
+REPEAT
 
 ## Team
