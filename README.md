@@ -42,6 +42,13 @@ Running the Unity Project:
 - Sufficient disk space for the project files and required Unity packages.
 
 ## Installation
+Run the Built Game:
+
+1. Download or clone the Project Mayhem repository.
+2. Navigate to the release or build folder.
+3. Locate the game executable.
+4. Run the executable to launch the game.
+5. Select Play from the main menu to start a match.
 
 
 
