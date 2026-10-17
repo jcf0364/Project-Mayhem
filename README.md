@@ -21,14 +21,27 @@ Platform: PC (Mac, Windows)
 - Settings menu with screen resolution options (filtered to the monitor's refresh rate)
 
 ## Controls
-Player 1: Movement: WASD, Attack: F \
-Player 2: Movement: Arrows, Attack: Shift \
+Player 1: \
+Movement: WASD, Attack: F \
+Player 2: \
+Movement: Arrows, Attack: Shift \
+
 Note: Controls can be Remapped in the options menu
 
-### Prerequisites
+## Prerequisites
+Running the Release Build:
+- A compatible Windows PC. 
+- A keyboard for local multiplayer controls. 
+- Sufficient disk space to extract and run the game files. 
+- No Unity Editor installation is required to run the release build. 
 
+Running the Unity Project:
+- Unity Hub. 
+- The Unity Editor version: 6000.5.6f1 
+- Git, if cloning the repository. 
+- Sufficient disk space for the project files and required Unity packages.
 
-### Installation
+## Installation
 
 
 
