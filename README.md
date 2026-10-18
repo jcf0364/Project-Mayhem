@@ -64,3 +64,8 @@ Run the Built Game:
 REPEAT
 
 ## Team
+- dreeaa, Scrum Master
+- mazgames15, Product Owner
+- CarstenBar, Dev
+- jcf0364, Dev \
+all members contributed to the development of Project Mayhem
