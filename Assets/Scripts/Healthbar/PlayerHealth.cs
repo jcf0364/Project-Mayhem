@@ -61,6 +61,7 @@ public class PlayerHealth : MonoBehaviour
         invulnerableUntil = Time.time + invulnerabilityDuration;
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        Debug.Log($"{name} took {amount}. Health now {currentHealth}");
 
         if (currentHealth == 0) Die();
     }
