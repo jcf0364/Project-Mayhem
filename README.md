@@ -69,3 +69,8 @@ REPEAT
 - CarstenBar, Dev
 - jcf0364, Dev \
 all members contributed to the development of Project Mayhem
+
+
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for more details.
