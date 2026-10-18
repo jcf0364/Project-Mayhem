@@ -19,12 +19,13 @@ public class HitBox2D : MonoBehaviour
 
     private Collider2D col;
     private readonly HashSet<HurtBox2D> alreadyHit = new HashSet<HurtBox2D>();
-
+    public GameObject player;
     public int Damage => damage;
     public bool IsActive => col != null && col.enabled;
 
     private void Awake()
     {
+        setstats();
         col = GetComponent<Collider2D>();
         col.isTrigger = true;
         if (owner ==null) owner = transform.root.gameObject;
@@ -74,5 +75,48 @@ public class HitBox2D : MonoBehaviour
             Gizmos.DrawCube(box.offset, box.size);
         else if (col is CircleCollider2D circle)
             Gizmos.DrawSphere(circle.offset, circle.radius);
+    }
+    private void setstats()
+    {
+        if (player.name == "Player1")
+        {
+            string text = PlayerPrefs.GetString("Character");
+
+
+            if (text == "Mayhem")
+            {
+                damage = 10;
+                knockback = 6f;
+                hitstun = 0.18f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    damage = 20;
+                    knockback = 12f;
+                    hitstun = 0.32f;
+                }
+            }
+        }
+        else
+        {
+            string text = PlayerPrefs.GetString("Character");
+            if (text == "Mayhem")
+            {
+                damage = 20;
+                knockback = 12f;
+                hitstun = 0.32f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    damage = 10;
+                    knockback = 6f;
+                    hitstun = 0.18f;
+                }
+            }
+        }
     }
 }

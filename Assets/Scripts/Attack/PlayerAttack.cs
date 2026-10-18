@@ -16,8 +16,11 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("The ONLY window where a hit can land.")]
     [SerializeField] private float activeTime = 0.12f;
     [Tooltip("Committed. Can't act again yet.")]
-    [SerializeField] private float recoveryTime = 0.20f;
-    [SerializeField] private float cooldown = 0.35f;
+    
+     private float recoveryTime;
+     private float cooldown;
+    public GameObject player;
+
 
     [Header("State")]
     [SerializeField] private bool inputEnabled = true;
@@ -31,8 +34,10 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
+        
         if (hitbox != null)
             baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
+        spritestats();
     }
 
     private void Update()
@@ -93,8 +98,50 @@ public class PlayerAttack : MonoBehaviour
         yield return new WaitForSeconds(activeTime);
         hitbox.Deactivate();
 
+        Debug.Log(recoveryTime);
         yield return new WaitForSeconds(recoveryTime);
         isAttacking = false;
+    }
+
+    //based on sprite
+    private void spritestats()
+    {
+        if (player.name == "Player1")
+        {
+            string text = PlayerPrefs.GetString("Character");
+            Debug.Log(text);
+
+            if (text == "Mayhem")
+            {
+                recoveryTime = 0.20f;
+                cooldown = 0.45f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    recoveryTime = 0.30f;
+                    cooldown = 0.75f;
+                }
+            }
+        }
+        else
+        {
+            string text = PlayerPrefs.GetString("Character");
+            if (text == "Mayhem")
+            {
+                recoveryTime = 0.30f;
+                cooldown = 0.75f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    recoveryTime = 0.20f;
+                    cooldown = 0.45f;
+                }
+            }
+        }
     }
 
     // Called by Animation Events once animations drive the hitbox.

@@ -6,8 +6,9 @@ public class PlayerHealth : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
 
-    [Header ("Damage Response")]
-    [SerializeField] private float invulnerabilityDuration = 0.5f;
+    [Header("Damage Response")]
+    private float invulnerabilityDuration;
+    public GameObject player;
 
     private int currentHealth;
     private float invulnerableUntil;
@@ -19,11 +20,11 @@ public class PlayerHealth : MonoBehaviour
     public int MaxHealth => maxHealth;
     public bool IsDead => currentHealth <= 0;
     public bool IsInvulnerable => Time.time < invulnerableUntil;
-
+    
     private void Awake()
     {
         currentHealth = maxHealth;
-
+        setinvunerability();
         // Listen for hits from the combat system.
         var hurtbox = GetComponentInChildren<HurtBox2D>();
         if (hurtbox != null)
@@ -58,6 +59,7 @@ public class PlayerHealth : MonoBehaviour
         if (IsInvulnerable) return;
 
         currentHealth = Mathf.Max(currentHealth - amount, 0);
+        
         invulnerableUntil = Time.time + invulnerabilityDuration;
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
@@ -85,5 +87,42 @@ public class PlayerHealth : MonoBehaviour
     {
         OnDied?.Invoke();
         Debug.Log($"{name} died.");
+    }
+
+    private void setinvunerability()
+    {
+        if (player.name == "Player1")
+        {
+            string text = PlayerPrefs.GetString("Character");
+            Debug.Log(text);
+            if (text == "Mayhem")
+            {
+                invulnerabilityDuration = 0.3f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    invulnerabilityDuration = 0.5f;
+                }
+            }
+        }
+        else
+        {
+            string text = PlayerPrefs.GetString("Character");
+            Debug.Log(text);
+
+            if (text == "Mayhem")
+            {
+                invulnerabilityDuration = 0.5f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    invulnerabilityDuration = 0.3f;
+                }
+            }
+        }
     }
 }

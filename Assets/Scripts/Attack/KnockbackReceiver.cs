@@ -6,14 +6,15 @@ public class KnockbackReceiver : MonoBehaviour
 {
     [Header("Knockback")]
     [Tooltip("Lower = heavier character, harder to move. Impulse depends on mass.")]
-    [SerializeField] private float knockbackMultiplier = 1f;
+    [SerializeField] private float knockbackMultiplier;
 
     [Tooltip("Upward component added to the push. 0 = flat, 1 = strong pop-up")]
-    [SerializeField] private float knockbackLift = 0.5f;
+    [SerializeField] private float knockbackLift;
 
     [Header("Hitstun")]
     [SerializeField] private bool applyHitstun = true;
 
+    public GameObject player;
 
     private Rigidbody2D rb;
     private Coroutine hitstunRoutine;
@@ -23,7 +24,7 @@ public class KnockbackReceiver : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        knockbacksprite();
     }
 
     private void OnEnable()
@@ -103,5 +104,45 @@ public class KnockbackReceiver : MonoBehaviour
         var move = GetComponent<LocalPlayerMovement>();
         if (move != null) move.SetInputEnabled(enabled);
 
+    }
+
+    private void knockbacksprite()
+    {
+        if (player.name == "Player1")
+        {
+            string text = PlayerPrefs.GetString("Character");
+            Debug.Log(text);
+
+            if (text == "Mayhem")
+            {
+                knockbackLift = 0.3f;
+                knockbackMultiplier = 1.4f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    knockbackLift = 0.5f;
+                    knockbackMultiplier = 1f;
+                }
+            }
+        }
+        else
+        {
+            string text = PlayerPrefs.GetString("Character");
+            if (text == "Mayhem")
+            {
+                knockbackLift = 0.5f;
+                knockbackMultiplier = 1f;
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    knockbackLift = 0.3f;
+                    knockbackMultiplier = 1.4f;
+                }
+            }
+        }
     }
 }

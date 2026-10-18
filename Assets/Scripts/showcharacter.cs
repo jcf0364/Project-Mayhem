@@ -6,25 +6,47 @@ public class showcharacter : MonoBehaviour
     public RuntimeAnimatorController animangelo;
     private Animator animplayer;
     public GameObject player;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        string text= PlayerPrefs.GetString("Character");
-        animplayer = player.GetComponent<Animator>();
-        if (text == "Mayhem")
+        if (player.name == "Player1")
         {
-        animplayer.runtimeAnimatorController = animmayhem as RuntimeAnimatorController;
-        Debug.Log("sprite is mayhem");
+            string text = PlayerPrefs.GetString("Character");
+            animplayer = player.GetComponent<Animator>();
+            if (text == "Mayhem")
+            {
+                animplayer.runtimeAnimatorController = animmayhem as RuntimeAnimatorController;
+                Debug.Log("sprite is mayhem");
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    animplayer.runtimeAnimatorController = animangelo as RuntimeAnimatorController;
+                    Debug.Log("sprite is angelo");
+                }
+            }
         }
         else
         {
-            if (text== "Angelo")
+            string text = PlayerPrefs.GetString("Character");
+            animplayer = player.GetComponent<Animator>();
+            if (text == "Mayhem")
             {
                 animplayer.runtimeAnimatorController = animangelo as RuntimeAnimatorController;
                 Debug.Log("sprite is angelo");
+                
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    animplayer.runtimeAnimatorController = animmayhem as RuntimeAnimatorController;
+                    Debug.Log("sprite is mayhem");
+                }
             }
         }
-
     }
 
     // Update is called once per frame

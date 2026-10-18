@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 public class LocalPlayerMovement : MonoBehaviour
 {
     // Movement
-    public float speed = 5f;
-    public float jumpForce = 7f;
+    public float speed ;
+    public float jumpForce ;
 
     // Player-specific controls
     public Key leftKey;
@@ -49,8 +49,12 @@ public class LocalPlayerMovement : MonoBehaviour
     // Animator
     public Animator anim;
 
+    //player
+    public GameObject player;
+
     void Start()
     {
+        
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
@@ -87,6 +91,7 @@ public class LocalPlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
+        jumpfocrceset();
         if (!inputEnabled)
         {
             if (anim != null) anim.SetBool("isMoving", false);
@@ -213,5 +218,44 @@ public class LocalPlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
             isGrounded = false;
+    }
+
+    void jumpfocrceset()
+    {
+        if (player.name == "Player1")
+        {
+            string text = PlayerPrefs.GetString("Character");
+            if (text == "Mayhem")
+            {
+                speed = 7f;
+                jumpForce = 9f;
+             }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    speed = 4.5f;
+                    jumpForce = 6f;
+                }
+            }
+        }
+        else
+        {
+            string text = PlayerPrefs.GetString("Character");
+            if (text == "Mayhem")
+            {
+                speed = 4.5f;
+                jumpForce = 6f;
+
+            }
+            else
+            {
+                if (text == "Angelo")
+                {
+                    speed = 7f;
+                    jumpForce = 9f;
+                }
+            }
+        }
     }
 }
