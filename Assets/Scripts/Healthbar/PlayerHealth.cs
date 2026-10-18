@@ -81,6 +81,14 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
+    // Sets health directly. Used by Sudden Death.
+    public void SetHealth(int value)
+    {
+        currentHealth = Mathf.Clamp(value, 1, maxHealth);
+        invulnerableUntil = 0f;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
     private void Die()
     {
         OnDied?.Invoke();

@@ -12,6 +12,16 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private int livesPerPlayer = 3;
     [SerializeField] private float roundResetDelay = 1.5f;
 
+    [Header("Sudden Death")]
+    [Tooltip("Health both fighters start with. 0.1 = 10% of max health.")]
+    [Range(0.01f, 1f)]
+    [SerializeField] private float suddenDeathHealth = 0.1f;
+    [SerializeField] private GameObject suddenDeathBanner;
+    [SerializeField] private float suddenDeathBannerTime = 2f;
+
+    [Tooltip("Only used when there's no GameSession, e.g. pressing Play in this scene directly.")]
+    [SerializeField] private MatchMode testMode = MatchMode.ThreeRound;
+
     [Header("UI")]
     [SerializeField] private TMP_Text livesTextP1;
     [SerializeField] private TMP_Text livesTextP2;
@@ -23,23 +33,19 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private TMP_Text statsTextP1;
     [SerializeField] private TMP_Text statsTextP2;
     [SerializeField] private TMP_Text matchTimeText;
-   
-   
+
     [Header("Round Flow")]
     [SerializeField] private RoundCountdown roundCountdown;
     [SerializeField] private GameObject mainMenuPanel;
 
-   
-
-    
     private bool firstMatch = true;
     private int livesP1;
     private int livesP2;
     private bool matchOver;
+    private MatchMode mode;
 
     private Vector3 startPosP1;
     private Vector3 startPosP2;
-
 
     private void Awake()
     {
@@ -69,15 +75,27 @@ public class MatchManager : MonoBehaviour
     {
         StopAllCoroutines();
         matchOver = false;
-        livesP1 = livesPerPlayer;
-        livesP2 = livesPerPlayer;
+
+        // Read the mode picked on the match mode screen.
+        mode = GameSession.Instance != null
+            ? GameSession.Instance.matchMode
+            : testMode;
+
+        // AC 2: Sudden Death gets one life each.
+        int startLives = mode == MatchMode.SuddenDeath ? 1 : livesPerPlayer;
+        livesP1 = startLives;
+        livesP2 = startLives;
 
         if (stats != null) stats.ResetStats();
 
         if (winScreen != null) winScreen.SetActive(false);
+        if (suddenDeathBanner != null) suddenDeathBanner.SetActive(false);
 
         UpdateLivesDisplay();
         ResetRoundState();
+
+        if (mode == MatchMode.SuddenDeath)
+            StartSuddenDeath();
     }
 
     private void ResetRoundState()
@@ -94,6 +112,33 @@ public class MatchManager : MonoBehaviour
         SetAllControlEnabled(true);
     }
 
+    // --- Sudden Death ---
+
+    private void StartSuddenDeath()
+    {
+        // AC 2: both fighters on low health. ResetHealth already ran,
+        // so both bars drain from full to the same point.
+        player1.SetHealth(LowHealth(player1));
+        player2.SetHealth(LowHealth(player2));
+
+        if (suddenDeathBanner != null)
+            StartCoroutine(BannerRoutine());
+    }
+
+    private int LowHealth(PlayerHealth fighter)
+    {
+        return Mathf.Max(1, Mathf.RoundToInt(fighter.MaxHealth * suddenDeathHealth));
+    }
+
+    private IEnumerator BannerRoutine()
+    {
+        suddenDeathBanner.SetActive(true);
+        yield return new WaitForSeconds(suddenDeathBannerTime);
+        suddenDeathBanner.SetActive(false);
+    }
+
+    // --- Deaths and rounds (unchanged) ---
+
     private void HandleP1Died() => HandleDeath(1);
     private void HandleP2Died() => HandleDeath(2);
 
@@ -103,7 +148,7 @@ public class MatchManager : MonoBehaviour
         if (matchOver) return;
 
         if (loserId == 1) livesP1--;
-        else              livesP2--;
+        else livesP2--;
 
         UpdateLivesDisplay();
 
@@ -112,6 +157,8 @@ public class MatchManager : MonoBehaviour
 
         SetAllControlEnabled(false);
 
+        // AC 3: in Sudden Death, lives start at 1, so the first KO
+        // always lands here and ends the match.
         if (livesP1 <= 0 || livesP2 <= 0)
         {
             int winnerId = livesP1 <= 0 ? 2 : 1;
@@ -202,11 +249,6 @@ public class MatchManager : MonoBehaviour
     {
         if (stats == null) return;
 
-        string nameP1 = GameSession.Instance != null
-            ? GameSession.Instance.GetPlayer1Name() : "PLAYER 1";
-        string nameP2 = GameSession.Instance != null
-            ? GameSession.Instance.GetPlayer2Name() : "PLAYER 2";
-
         if (statsTextP1 != null)
             statsTextP1.text =
                 "<b>PLAYER 1</b>\n" +
@@ -227,9 +269,7 @@ public class MatchManager : MonoBehaviour
             matchTimeText.text = $"Match time: {stats.FormatDuration()}";
     }
 
-    
-
-    // --- Button handler ---
+    // --- Button handlers ---
 
     public void RestartMatch()
     {
@@ -241,7 +281,7 @@ public class MatchManager : MonoBehaviour
             firstMatch = false;
             return;
         }
-        
+
         StartCoroutine(RestartCountdownRoutine());
     }
 
