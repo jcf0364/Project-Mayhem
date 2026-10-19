@@ -54,7 +54,7 @@ public class LocalPlayerMovement : MonoBehaviour
 
     void Start()
     {
-        
+        jumpfocrceset();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
@@ -91,7 +91,7 @@ public class LocalPlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        jumpfocrceset();
+        
         if (!inputEnabled)
         {
             if (anim != null) anim.SetBool("isMoving", false);
@@ -228,7 +228,7 @@ public class LocalPlayerMovement : MonoBehaviour
             if (text == "Mayhem")
             {
                 speed = 7f;
-                jumpForce = 9f;
+                jumpForce = 10f;
              }
             else
             {
@@ -253,7 +253,7 @@ public class LocalPlayerMovement : MonoBehaviour
                 if (text == "Angelo")
                 {
                     speed = 7f;
-                    jumpForce = 9f;
+                    jumpForce = 10f;
                 }
             }
         }
