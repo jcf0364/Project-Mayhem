@@ -12,6 +12,16 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private int livesPerPlayer = 3;
     [SerializeField] private float roundResetDelay = 1.5f;
 
+    [Header("Sudden Death")]
+    [Tooltip("Health both fighters start with. 0.1 = 10% of max health.")]
+    [Range(0.01f, 1f)]
+    [SerializeField] private float suddenDeathHealth = 0.1f;
+    [SerializeField] private GameObject suddenDeathBanner;
+    [SerializeField] private float suddenDeathBannerTime = 2f;
+
+    [Tooltip("Only used when there's no GameSession, e.g. pressing Play in this scene directly.")]
+    [SerializeField] private MatchMode testMode = MatchMode.ThreeRound;
+
     [Header("UI")]
     [SerializeField] private TMP_Text livesTextP1;
     [SerializeField] private TMP_Text livesTextP2;
@@ -36,6 +46,7 @@ public class MatchManager : MonoBehaviour
     private int livesP1;
     private int livesP2;
     private bool matchOver;
+    private MatchMode mode;
 
     private Vector3 startPosP1;
     private Vector3 startPosP2;
@@ -72,12 +83,27 @@ public class MatchManager : MonoBehaviour
         livesP1 = livesPerPlayer;
         livesP2 = livesPerPlayer;
 
+        // Sudden Death: read the picked mode, one life each
+        mode = GameSession.Instance != null
+            ? GameSession.Instance.matchMode
+            : testMode;
+
+        if (mode == MatchMode.SuddenDeath)
+        {
+            livesP1 = 1;
+            livesP2 = 1;
+        }
+
         if (stats != null) stats.ResetStats();
 
         if (winScreen != null) winScreen.SetActive(false);
 
+        if (suddenDeathBanner != null) suddenDeathBanner.SetActive(false);
+
         UpdateLivesDisplay();
         ResetRoundState();
+        if (mode == MatchMode.SuddenDeath)
+            StartSuddenDeath();
     }
 
     private void ResetRoundState()
@@ -92,6 +118,31 @@ public class MatchManager : MonoBehaviour
         player2.ResetHealth();
 
         SetAllControlEnabled(true);
+    }
+
+    // --- Sudden Death ---
+
+    private void StartSuddenDeath()
+    {
+        // Both fighters on low health. ResetHealth already ran,
+        // so both bars drain from full to the same point.
+        player1.SetHealth(LowHealth(player1));
+        player2.SetHealth(LowHealth(player2));
+
+        if (suddenDeathBanner != null)
+            StartCoroutine(BannerRoutine());
+    }
+
+    private int LowHealth(PlayerHealth fighter)
+    {
+        return Mathf.Max(1, Mathf.RoundToInt(fighter.MaxHealth * suddenDeathHealth));
+    }
+
+    private IEnumerator BannerRoutine()
+    {
+        suddenDeathBanner.SetActive(true);
+        yield return new WaitForSeconds(suddenDeathBannerTime);
+        suddenDeathBanner.SetActive(false);
     }
 
     private void HandleP1Died() => HandleDeath(1);

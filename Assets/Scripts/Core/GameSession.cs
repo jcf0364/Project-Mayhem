@@ -1,6 +1,8 @@
 using UnityEngine;
 
 /// Survives scene loads. Holds what the player picked.
+// The two match types on the match mode screen
+public enum MatchMode { ThreeRound, SuddenDeath }
 public class GameSession : MonoBehaviour
 {
     public static GameSession Instance { get; private set; }
@@ -9,6 +11,8 @@ public class GameSession : MonoBehaviour
     public int player1CharacterIndex = 0;
     public int player2CharacterIndex = 1;
     public int arenaIndex = 0;
+    [Header("Match")]
+    public MatchMode matchMode = MatchMode.ThreeRound;
 
     [Header("Profiles")]
     // Ids, not names. If a player renames themselves mid-session the
@@ -49,5 +53,6 @@ public class GameSession : MonoBehaviour
         player1CharacterIndex = 0;
         player2CharacterIndex = 1;
         arenaIndex = 0;
+        matchMode = MatchMode.ThreeRound;
     }
 }

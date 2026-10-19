@@ -13,14 +13,16 @@ public class SceneLoader : MonoBehaviour
     public const string Battle2 = "Battle Arena 2";
     public const string Battle3 = "Battle Arena 3";
     public const string Loading = "Loading";
+    public const string MatchModeSelect = "MatchModeSelect";
 
-// The scene the loading screen should load next
+    // The scene the loading screen should load next
     public static string NextScene;
 
     public void LoadMainMenu() => Load(MainMenu);
     public void LoadProfileSelect() => Load(ProfileSelect);
     public void LoadCharacterSelect() => Load(CharacterSelect);
     public void LoadArenaSelect() => Load(ArenaSelect);
+    public void LoadMatchModeSelect() => Load(MatchModeSelect);
     public void LoadBattle() => Load(Battle);
     public void LoadBattle1() => LoadWithLoadingScreen(Battle1);
     public void LoadBattle2() => LoadWithLoadingScreen(Battle2);
@@ -35,6 +37,10 @@ public class SceneLoader : MonoBehaviour
     public static void Load(string sceneName)
     {
         Time.timeScale = 1f;
+        // Back at the main menu: forget the match mode,
+        // so PvAI always plays a normal match.
+        if (sceneName == MainMenu && GameSession.Instance != null)
+            GameSession.Instance.matchMode = MatchMode.ThreeRound;
         SceneManager.LoadScene(sceneName);
     }
 }

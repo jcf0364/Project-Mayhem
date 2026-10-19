@@ -10,6 +10,9 @@ public class AIDifficultySelection : MonoBehaviour
         // The AI (Player 2) gets the other one.
         string character = Random.value < 0.5f ? "Mayhem" : "Angelo";
         PlayerPrefs.SetString("Character", character);
+        // PvAI never plays Sudden Death
+        if (GameSession.Instance != null)
+            GameSession.Instance.matchMode = MatchMode.ThreeRound;
         PlayerPrefs.Save();
 
         // Go through SceneLoader so Time.timeScale gets reset.
