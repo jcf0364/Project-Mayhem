@@ -267,7 +267,7 @@ public class LocalPlayerMovement : MonoBehaviour
             if (text == "Mayhem")
             {
                 speed = 7f;
-                jumpForce = 10f;
+                jumpForce = 15f;
              }
             else
             {
@@ -292,7 +292,7 @@ public class LocalPlayerMovement : MonoBehaviour
                 if (text == "Angelo")
                 {
                     speed = 7f;
-                    jumpForce = 10f;
+                    jumpForce = 15f;
                 }
             }
         }

@@ -7,9 +7,22 @@ public class PlayerAttack : MonoBehaviour
     [Header("References")]
     [SerializeField] private HitBox2D hitbox;
 
+    
     [Header("Input")]
     [SerializeField] private Key attackKey = Key.J;
 
+    // Updates the attack key when the player remaps controls
+    public void SetAttackKey(Key newKey)
+    {
+        attackKey = newKey;
+    }
+
+    // Returns the player's currently assigned attack key
+    // Used when cancelling control remapping
+    public Key GetAttackKey()
+    {
+        return attackKey;
+    }
     [Header("Timing (seconds)")]
     [Tooltip("Telegraph before the hitbox turns on.")]
     [SerializeField] private float windupTime = 0.08f;

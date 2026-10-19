@@ -10,7 +10,7 @@ public class AIDifficultySelection : MonoBehaviour
 
         // Go through SceneLoader so Time.timeScale gets reset.
         // Loading directly meant a paused game stayed frozen.
-        SceneLoader.Load("Battle AI");
+         SceneLoader.Load("Battle AI");
     }
 
     // Called by the Easy button
