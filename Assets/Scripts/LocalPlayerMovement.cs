@@ -261,6 +261,7 @@ public class LocalPlayerMovement : MonoBehaviour
 
     void jumpfocrceset()
     {
+        if (player == null) player = transform.root.gameObject; // safety net
         if (player.name == "Player1")
         {
             string text = PlayerPrefs.GetString("Character");

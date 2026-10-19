@@ -6,6 +6,10 @@ public class AIDifficultySelection : MonoBehaviour
     private void StartAIBattle(AIController.Difficulty difficulty)
     {
         PlayerPrefs.SetInt("AIDifficulty", (int)difficulty);
+        // PvAI has no character select, so pick Player 1's character at random.
+        // The AI (Player 2) gets the other one.
+        string character = Random.value < 0.5f ? "Mayhem" : "Angelo";
+        PlayerPrefs.SetString("Character", character);
         PlayerPrefs.Save();
 
         // Go through SceneLoader so Time.timeScale gets reset.
