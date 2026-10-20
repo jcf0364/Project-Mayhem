@@ -22,6 +22,7 @@ public class HitBox2D : MonoBehaviour
     public GameObject player;
     public int Damage => damage;
     public bool IsActive => col != null && col.enabled;
+   
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class HitBox2D : MonoBehaviour
         col.isTrigger = true;
         if (owner ==null) owner = transform.root.gameObject;
         if (startDisabled) col.enabled = false;
+        
     }
 
     /// On for the active frames. Called by PlayerAttack now,

@@ -102,6 +102,11 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
+        PlayerPrefs.SetString("ID", " ");
+        if (hitbox != null)
+            baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
+        spritestats();
+        
 
         if (hitbox != null)
             baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
@@ -320,6 +325,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+    
 
     // Called by Animation Events once animations drive the hitbox.
     public void AnimActivateHitbox() => hitbox.Activate();
