@@ -47,7 +47,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
-        
+        PlayerPrefs.SetString("ID", " ");
         if (hitbox != null)
             baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
         spritestats();
