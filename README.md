@@ -2,7 +2,7 @@
 GAME OF THE YEAR
 
 ## About the Game
-Project Mayhem is a fast paced 2D platform fighter where players battle on a platforms and try to defeat their opponent. Each player has a health bar and a set number of lives. The last player standing wins the round.
+Project Mayhem is a fast paced 2D platform fighter where players battle on a platform and try to defeat their opponent. Each player has a health bar and a set number of lives. The last player standing wins the round.
 
 Game Details
 
@@ -24,13 +24,13 @@ Platform: PC (Mac, Windows)
 Player 1: \
 Movement: WASD, Attack: F \
 Player 2: \
-Movement: Arrows, Attack: Shift \
+Movement: Arrows, Attack: Shift 
 
 Note: Controls can be Remapped in the options menu
 
 ## Prerequisites
 Running the Release Build:
-- A compatible Windows PC. 
+- A compatible Mac, Windows PC. 
 - A keyboard for local multiplayer controls. 
 - Sufficient disk space to extract and run the game files. 
 - No Unity Editor installation is required to run the release build. 
@@ -56,11 +56,11 @@ Run the Built Game:
 3. Login to your profiles (guest login available)
 4. Choose your characters
 5. Select an arena
-6. Wait for the round countdown to finish, then battle beigns
+6. Wait for the round countdown to finish, then battle begins
 7. Attack your opponent while avoiding incoming attacks.
 8. Reduce your opponent's health and use the lives system to your advantage.
 9. Continue fighting until one player has no lives remaining.
-10 View the results screen to see the match outcome. \
+10. View the results screen to see the match outcome. \
 REPEAT
 
 ## Team

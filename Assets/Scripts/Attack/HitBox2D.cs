@@ -88,6 +88,7 @@ public class HitBox2D : MonoBehaviour
     }
     private void setstats()
     {
+        if (player == null) player = GetComponentInParent<LocalPlayerMovement>().gameObject; // safety net
         if (player.name == "Player1")
         {
             string text = PlayerPrefs.GetString("Character");
@@ -129,5 +130,19 @@ public class HitBox2D : MonoBehaviour
             }
         }
     }
-    
+
+    // Which character this hitbox belongs to.
+    // Same rule as setstats(): Player1 gets the picked character,
+    // the other player gets the other one.
+    public string GetCharacterName()
+    {
+        string picked = PlayerPrefs.GetString("Character");
+
+        if (player != null && player.name == "Player1")
+            return picked;
+
+        if (picked == "Mayhem") return "Angelo";
+        if (picked == "Angelo") return "Mayhem";
+        return picked;
+    }
 }
