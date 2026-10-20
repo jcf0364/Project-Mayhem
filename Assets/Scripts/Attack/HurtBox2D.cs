@@ -7,6 +7,7 @@ public class HurtBox2D : MonoBehaviour
     [Header("Damage Routing")]
     [Tooltip("2.5 on a head hurtbox gives critical hits for free.")]
     [SerializeField] private float damageMultiplier = 1f;
+    public GameObject player;
 
     [Header("Debug")]
     [SerializeField] private bool logHits = true;
@@ -18,13 +19,27 @@ public class HurtBox2D : MonoBehaviour
     public int TotalDamageTaken { get; private set; }
 
     private BlockState blockState;
+    private int mult;
+    private float timer;
 
     public void Awake()
     {
         GetComponent<Collider2D>().isTrigger = true;
-
+        
         // BlockState lives on the fighter; this hurtbox is a child of it.
         blockState = GetComponentInParent<BlockState>();
+    }
+
+    private void Update()
+    {
+        timer += Time.deltaTime;
+        if (timer > 10)
+        {
+            timer = 0;
+            damageMultiplier = 1;
+            PlayerPrefs.SetString("ID", " ");
+        }
+        
     }
 
     /// Single funnel for every incoming hit. The block reduction happens
@@ -36,7 +51,10 @@ public class HurtBox2D : MonoBehaviour
     {
         // Hurtbox multiplier first — a head hurtbox should scale the raw
         // damage before the guard reduces it, not after.
+        powerups();
         info.Damage = Mathf.RoundToInt(info.Damage * damageMultiplier);
+        
+        Debug.Log(damageMultiplier);
 
         bool blocked = blockState != null
                        && blockState.IsBlockingAgainst(info.SourcePosition);
@@ -63,6 +81,15 @@ public class HurtBox2D : MonoBehaviour
 
         OnHitReceived?.Invoke(info);
     }
-
+    void powerups()
+    {
+        Debug.Log(PlayerPrefs.GetString("ID"));
+        if (player.name == PlayerPrefs.GetString("ID"))
+        {   
+            Debug.Log("multiplier active");
+            
+            damageMultiplier = PlayerPrefs.GetFloat("multiplier", 1f);
+        }
+    }
     public void ResetDamageCounter() => TotalDamageTaken = 0;
 }

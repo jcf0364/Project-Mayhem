@@ -51,6 +51,7 @@ public class PlayerAttack : MonoBehaviour
         if (hitbox != null)
             baseHitboxX = Mathf.Abs(hitbox.transform.localPosition.x);
         spritestats();
+        
     }
 
     private void Update()
@@ -156,6 +157,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
     }
+    
 
     // Called by Animation Events once animations drive the hitbox.
     public void AnimActivateHitbox()   => hitbox.Activate();
