@@ -1386,6 +1386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HurtBox2D
   damageMultiplier: 1
+  player: {fileID: 1614839878}
   logHits: 1
 --- !u!61 &200131657
 BoxCollider2D:
@@ -6675,6 +6676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HurtBox2D
   damageMultiplier: 1
+  player: {fileID: 696962509}
   logHits: 1
 --- !u!61 &1250418302
 BoxCollider2D:
