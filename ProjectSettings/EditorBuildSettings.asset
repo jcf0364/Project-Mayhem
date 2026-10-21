@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProfileSelect.unity
     guid: 7a30dbad0703e374ba8a9dddd71e4f8e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MatchModeSelect.unity
     guid: 3c29fe4c1cdd7b34caf7a9fb6d35e73c
   - enabled: 1

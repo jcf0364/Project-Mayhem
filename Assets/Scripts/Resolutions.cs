@@ -47,6 +47,11 @@ public class Resolutions : MonoBehaviour
     public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = filteredResolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, true);
+        Screen.SetResolution(resolution.width, resolution.height, FullScreenMode.Windowed);
+    }
+
+    public void SetFullscreen(bool isFullscreen)
+    {
+        Screen.fullScreenMode = isFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
     }
 }
